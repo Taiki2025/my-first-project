@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My九電 - AIチャットボット申込み</title>
+    <title>My九電</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -171,7 +171,7 @@
                 <div class="yearly-chart-container">
                     <div class="chart-area">
                         <div class="chart-y-axis">
-                            <span class="y-label">(m³)</span>
+                            <span class="y-label">(kWh)</span>
                             <div class="y-values">
                                 <span>40</span>
                                 <span>30</span>
@@ -234,37 +234,37 @@
                             </div>
 
                             <!-- 前年の線グラフ -->
-                            <svg class="line-chart previous-year" viewBox="0 0 324 40">
-                                <polyline points="13.5,30 40.5,28 67.5,20 94.5,25 121.5,22 148.5,18 175.5,22 202.5,26 229.5,24 256.5,20 283.5,18 310.5,16" fill="none" stroke="#ff7043" stroke-width="1" stroke-dasharray="2,2"></polyline>
-                                <circle cx="13.5" cy="30" r="1" fill="#ff7043"></circle>
-                                <circle cx="40.5" cy="28" r="1" fill="#ff7043"></circle>
-                                <circle cx="67.5" cy="20" r="1" fill="#ff7043"></circle>
-                                <circle cx="94.5" cy="25" r="1" fill="#ff7043"></circle>
-                                <circle cx="121.5" cy="22" r="1" fill="#ff7043"></circle>
-                                <circle cx="148.5" cy="18" r="1" fill="#ff7043"></circle>
-                                <circle cx="175.5" cy="22" r="1" fill="#ff7043"></circle>
-                                <circle cx="202.5" cy="26" r="1" fill="#ff7043"></circle>
-                                <circle cx="229.5" cy="24" r="1" fill="#ff7043"></circle>
-                                <circle cx="256.5" cy="20" r="1" fill="#ff7043"></circle>
-                                <circle cx="283.5" cy="18" r="1" fill="#ff7043"></circle>
-                                <circle cx="310.5" cy="16" r="1" fill="#ff7043"></circle>
+                            <svg class="line-chart previous-year" viewBox="0 0 340 200" style="min-width: 340px; width: 100%;">
+                                <polyline points="20.5,160 47.5,140 74.5,110 101.5,125 128.5,100 155.5,90 182.5,110 209.5,120 236.5,130 263.5,160 290.5,140 317.5,130" fill="none" stroke="#ff7043" stroke-width="2" stroke-dasharray="3,3"></polyline>
+                                <circle cx="20.5" cy="160" r="2" fill="#ff7043"></circle>
+                                <circle cx="47.5" cy="140" r="2" fill="#ff7043"></circle>
+                                <circle cx="74.5" cy="110" r="2" fill="#ff7043"></circle>
+                                <circle cx="101.5" cy="125" r="2" fill="#ff7043"></circle>
+                                <circle cx="128.5" cy="100" r="2" fill="#ff7043"></circle>
+                                <circle cx="155.5" cy="90" r="2" fill="#ff7043"></circle>
+                                <circle cx="182.5" cy="110" r="2" fill="#ff7043"></circle>
+                                <circle cx="209.5" cy="120" r="2" fill="#ff7043"></circle>
+                                <circle cx="236.5" cy="130" r="2" fill="#ff7043"></circle>
+                                <circle cx="263.5" cy="160" r="2" fill="#ff7043"></circle>
+                                <circle cx="290.5" cy="140" r="2" fill="#ff7043"></circle>
+                                <circle cx="317.5" cy="130" r="2" fill="#ff7043"></circle>
                             </svg>
-
+                            
                             <!-- 他の家庭の線グラフ -->
-                            <svg class="line-chart other-households" viewBox="0 0 324 40">
-                                <polyline points="13.5,32 40.5,30 67.5,24 94.5,28 121.5,25 148.5,22 175.5,25 202.5,28 229.5,26 256.5,22 283.5,20 310.5,18" fill="none" stroke="#66bb6a" stroke-width="1" stroke-dasharray="2,2"></polyline>
-                                <circle cx="13.5" cy="32" r="1" fill="#66bb6a"></circle>
-                                <circle cx="40.5" cy="30" r="1" fill="#66bb6a"></circle>
-                                <circle cx="67.5" cy="24" r="1" fill="#66bb6a"></circle>
-                                <circle cx="94.5" cy="28" r="1" fill="#66bb6a"></circle>
-                                <circle cx="121.5" cy="25" r="1" fill="#66bb6a"></circle>
-                                <circle cx="148.5" cy="22" r="1" fill="#66bb6a"></circle>
-                                <circle cx="175.5" cy="25" r="1" fill="#66bb6a"></circle>
-                                <circle cx="202.5" cy="28" r="1" fill="#66bb6a"></circle>
-                                <circle cx="229.5" cy="26" r="1" fill="#66bb6a"></circle>
-                                <circle cx="256.5" cy="22" r="1" fill="#66bb6a"></circle>
-                                <circle cx="283.5" cy="20" r="1" fill="#66bb6a"></circle>
-                                <circle cx="310.5" cy="18" r="1" fill="#66bb6a"></circle>
+                            <svg class="line-chart other-households" viewBox="0 0 340 200" style="min-width: 340px; width: 100%;">
+                                <polyline points="20.5,170 47.5,150 74.5,125 101.5,135 128.5,115 155.5,100 182.5,125 209.5,135 236.5,145 263.5,170 290.5,155 317.5,145" fill="none" stroke="#66bb6a" stroke-width="2" stroke-dasharray="3,3"></polyline>
+                                <circle cx="20.5" cy="170" r="2" fill="#66bb6a"></circle>
+                                <circle cx="47.5" cy="150" r="2" fill="#66bb6a"></circle>
+                                <circle cx="74.5" cy="125" r="2" fill="#66bb6a"></circle>
+                                <circle cx="101.5" cy="135" r="2" fill="#66bb6a"></circle>
+                                <circle cx="128.5" cy="115" r="2" fill="#66bb6a"></circle>
+                                <circle cx="155.5" cy="100" r="2" fill="#66bb6a"></circle>
+                                <circle cx="182.5" cy="125" r="2" fill="#66bb6a"></circle>
+                                <circle cx="209.5" cy="135" r="2" fill="#66bb6a"></circle>
+                                <circle cx="236.5" cy="145" r="2" fill="#66bb6a"></circle>
+                                <circle cx="263.5" cy="170" r="2" fill="#66bb6a"></circle>
+                                <circle cx="290.5" cy="155" r="2" fill="#66bb6a"></circle>
+                                <circle cx="317.5" cy="145" r="2" fill="#66bb6a"></circle>
                             </svg>
                         </div>
                         <div class="chart-x-axis" style="display: none;">
@@ -472,47 +472,6 @@
             </div>
         </div>
 
-            <!-- AIチャットボットセクション -->
-            <div class="card chat-section">
-                <div class="card-header">
-                    <h3>AIチャットボットで簡単申込み</h3>
-                    <p>24時間いつでも、お客様のご都合に合わせてAIがサポート</p>
-                </div>
-                
-                <div class="chat-preview">
-                    <div class="chat-message bot">
-                        <div class="message-avatar">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="message-content">
-                            こんにちは！My九電のAIアシスタントです。<br>
-                            電力契約のお手続きをサポートいたします。
-                        </div>
-                    </div>
-                    <div class="chat-message user">
-                        <div class="message-content">
-                            新規契約をしたいのですが
-                        </div>
-                    </div>
-                    <div class="chat-message bot">
-                        <div class="message-avatar">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="message-content">
-                            承知いたしました！<br>
-                            お客様のご要望に合わせて最適なプランをご提案いたします。
-                        </div>
-                    </div>
-                </div>
-
-                <div class="chat-actions">
-                    <button class="btn btn-primary" onclick="startChat()">
-                        <i class="fas fa-comments"></i>
-                        チャットボットで申込み開始
-                    </button>
-                </div>
-            </div>
-
             <!-- 料金プランセクション -->
             <div class="card plans-section">
                 <div class="card-header">
@@ -559,15 +518,142 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Qピコポイントカード -->
+            <div class="card qpico-card">
+                <div class="card-header">
+                    <h3>Qピコ<i class="fas fa-question-circle"></i></h3>
+                </div>
+                <div class="qpico-content">
+                    <div class="qpico-points">
+                        <span class="points-number">158</span>
+                        <span class="points-unit">ピコ</span>
+                    </div>
+                    <div class="qpico-expiry">
+                        次回失効2ピコ 2025/12/31 失効
+                    </div>
+                    <button class="btn btn-outline qpico-history-btn" onclick="openQpicoHistory()">
+                        Qピコ履歴を確認する >
+                    </button>
+                </div>
+            </div>
         </main>
+
+        <!-- Qピコ履歴モーダル -->
+        <div id="qpicoModal" class="qpico-modal">
+            <div class="qpico-container">
+                <div class="qpico-header">
+                    <div class="qpico-title">
+                        <i class="fas fa-history"></i>
+                        Qピコ履歴
+                    </div>
+                    <button class="close-btn" onclick="closeQpicoHistory()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="qpico-content">
+                    <!-- 現在の残高セクション -->
+                    <div class="qpico-balance-card">
+                        <div class="balance-info">
+                            <div class="balance-number">160</div>
+                            <div class="balance-unit">ピコ</div>
+                            <div class="balance-expiry">次回失効 2ピコ 2025/12/31 失効</div>
+                        </div>
+                        <div class="balance-help">
+                            <span>Qピコとは?</span>
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                    </div>
+
+                    <!-- おすすめメッセージ -->
+                    <div class="qpico-recommendation">
+                        <div class="recommendation-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="recommendation-message">
+                            <div class="message-text">タロウさん、現在の保有ポイントで還元可能なおすすめ賞品をご紹介します!</div>
+                            <button class="btn btn-primary btn-sm" onclick="showRecommendations()">
+                                詳細を表示
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 契約情報セクション -->
+                    <div class="qpico-section">
+                        <div class="section-header">
+                            <i class="fas fa-plus"></i>
+                            <span>ご契約情報</span>
+                        </div>
+                    </div>
+
+                    <!-- Qピコ履歴セクション -->
+                    <div class="qpico-section">
+                        <div class="section-header">
+                            <i class="fas fa-history"></i>
+                            <span>Qピコ履歴</span>
+                        </div>
+                        <div class="history-list">
+                            <div class="history-item">
+                                <div class="history-points">+2 ピコ</div>
+                                <div class="history-details">
+                                    <div class="history-description">ログインポイント</div>
+                                    <div class="history-date">日付: 2025/08/02</div>
+                                    <div class="history-content">内容: 2025年8月分</div>
+                                </div>
+                            </div>
+                            <div class="history-item">
+                                <div class="history-points">+1 ピコ</div>
+                                <div class="history-details">
+                                    <div class="history-description">Web版検針票</div>
+                                    <div class="history-date">日付: 2025/07/28</div>
+                                    <div class="history-content">内容: 2025年7月分</div>
+                                </div>
+                            </div>
+                            <div class="history-item">
+                                <div class="history-points">+4 ピコ</div>
+                                <div class="history-details">
+                                    <div class="history-description">電気のご利用</div>
+                                    <div class="history-date">日付: 2025/07/26</div>
+                                    <div class="history-content">内容: 2025年7月分</div>
+                                </div>
+                            </div>
+                            <div class="history-item">
+                                <div class="history-points">+20 ピコ</div>
+                                <div class="history-details">
+                                    <div class="history-description">ご契約情報の追加</div>
+                                    <div class="history-date">日付: 2025/07/24</div>
+                                    <div class="history-content">内容: 2025年7月分</div>
+                                </div>
+                            </div>
+                            <div class="history-item">
+                                <div class="history-points">+5 ピコ</div>
+                                <div class="history-details">
+                                    <div class="history-description">ecoアプリ使用</div>
+                                    <div class="history-date">日付: 2025/07/22</div>
+                                    <div class="history-content">内容: 2025年7月分</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline btn-load-more" onclick="loadMoreHistory()">
+                            さらに表示
+                        </button>
+                    </div>
+                </div>
+                <div class="qpico-footer">
+                    <button class="btn btn-outline btn-home" onclick="closeQpicoHistory()">
+                        ホームに戻る
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- チャットボットモーダル -->
         <div id="chatModal" class="chat-modal">
             <div class="chat-container">
                 <div class="chat-header">
                     <div class="chat-title">
-                        <i class="fas fa-robot"></i>
-                        My九電AIアシスタント
+                        <i class="fas fa-headset"></i>
+                        My九電お客様サポート
                     </div>
                     <button class="close-btn" onclick="closeChat()">
                         <i class="fas fa-times"></i>
@@ -576,12 +662,17 @@
                 <div class="chat-messages" id="chatMessages">
                     <div class="message bot-message">
                         <div class="message-avatar">
-                            <i class="fas fa-robot"></i>
+                            <i class="fas fa-headset"></i>
                         </div>
                         <div class="message-content">
-                            こんにちは！My九電のAIアシスタントです。<br>
-                            電力契約のお手続きをサポートいたします。<br><br>
-                            お客様のお名前を教えてください。
+                            こんにちは！My九電お客様サポートです。<br>
+                            どのようなご用件でしょうか？<br><br>
+                            【対応可能な内容】<br>
+                            ・電力契約のお手続き<br>
+                            ・料金プランのご相談<br>
+                            ・ご利用料金に関するお問い合わせ<br>
+                            ・停電情報の確認<br>
+                            ・その他各種お手続き
                         </div>
                     </div>
                 </div>
@@ -598,13 +689,10 @@
         <footer class="app-footer">
             <div class="footer-links">
                 <a href="#" class="footer-link" onclick="openChat()">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-comments"></i>
                     <span>お客様サポート</span>
                 </a>
-                <a href="#" class="footer-link">
-                    <i class="fas fa-phone"></i>
-                    <span>緊急時連絡先</span>
-                </a>
+
                 <a href="#" class="footer-link">
                     <i class="fas fa-cog"></i>
                     <span>設定</span>

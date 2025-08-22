@@ -1,9 +1,13 @@
-// チャットボットの状態管理
-let chatState = {
-    step: 0,
+// サポートチャットの状態管理
+let supportChatState = {
+    currentTopic: null,
     userInfo: {},
-    selectedPlan: null,
-    isLifestyleChat: false, // ライフスタイル診断チャットかどうかを判定するフラグ
+    step: 0
+};
+
+// ライフスタイル診断の状態管理
+let lifestyleChatState = {
+    step: 0,
     lifestyleAnswers: {}
 };
 
@@ -29,6 +33,23 @@ const lifestyleChatResponses = {
     4: { message: "承知いたしました。それでは、申込み手続きを開始します。<br><br>" + normalChatResponses[0].message, nextStep: 'switchToNormal_0' }
 };
 
+// サポート応答パターン
+const supportResponses = {
+    contract: {
+        0: { message: "電力契約についてご案内いたします。<br><br>新規契約をご希望でしょうか？それとも契約変更でしょうか？<br><br>1. 新規契約<br>2. 契約変更<br>3. 解約手続き<br><br>番号でお答えください。", nextStep: 1 },
+        1: { message: "承知いたしました。詳しいお手続きについて、担当者よりご連絡させていただきます。<br><br>お電話番号を教えていただけますか？", nextStep: 2 },
+        2: { message: "ありがとうございます。2営業日以内に担当者よりご連絡いたします。<br><br>他にご質問はございますか？", nextStep: -1 }
+    },
+    billing: {
+        0: { message: "ご利用料金についてお答えいたします。<br><br>1. 今月の料金確認<br>2. 過去の料金履歴<br>3. 料金が高い理由<br>4. 支払い方法の変更<br><br>どちらについてお知りになりたいですか？", nextStep: 1 },
+        1: { message: "詳細な情報は、My九電アプリの「ご利用料金」画面でご確認いただけます。<br><br>さらに詳しい内容については、お電話でのご相談も承っております。<br><br>フリーダイヤル: 0120-986-302<br>（平日9:00-18:00）", nextStep: -1 }
+    },
+    plan: {
+        0: { message: "料金プランについてご案内いたします。<br><br>現在ご利用中のプランから変更をご検討でしょうか？<br><br>1. プラン変更の相談<br>2. プランの詳細説明<br>3. おすすめプランの提案<br><br>番号でお選びください。", nextStep: 1 },
+        1: { message: "お客様のライフスタイルに最適なプランをご提案いたします。<br><br>詳しい診断とお手続きについては、専門スタッフがご対応いたします。<br><br>お電話でのご相談をご希望の場合は、フリーダイヤルまでお電話ください。<br><br>0120-986-302（平日9:00-18:00）", nextStep: -1 }
+    }
+};
+
 // タブ切り替え機能（既に使われていない可能性があるため、スコープを限定）
 function switchTab(tabName) {
     // ダッシュボードタブのみに限定（実績カードのタブには影響しない）
@@ -46,235 +67,188 @@ function animateChartBars(tabName) {
     // 実装は省略
 }
 
-// チャットボットを開く
-function openChat(isLifestyle = false) {
+// サポートチャットを開く
+function openChat() {
     const modal = document.getElementById('chatModal');
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-
-    // チャット状態をリセット
-    chatState = {
-        step: 0,
-        userInfo: {},
-        selectedPlan: null,
-        isLifestyleChat: isLifestyle,
-        lifestyleAnswers: {}
-    };
-
-    // チャット履歴をクリア
-    const chatMessages = document.getElementById('chatMessages');
-    chatMessages.innerHTML = '';
-
-    let initialMessage = '';
-    if (isLifestyle) {
-        initialMessage = lifestyleChatResponses[0].message;
-    } else {
-        initialMessage = "こんにちは！My九電のAIアシスタントです。<br>電力契約のお手続きをサポートいたします。";
-        if (chatState.selectedPlan) {
-            initialMessage += `<br><br>「<b>${chatState.selectedPlan}</b>」プランのお申込みですね。`;
-        }
-        initialMessage += `<br><br>${normalChatResponses[0].message}`;
+    if (modal) {
+        modal.style.display = 'flex';
+        
+        // サポートチャットの状態を初期化
+        supportChatState = {
+            currentTopic: null,
+            userInfo: {},
+            step: 0
+        };
+        
+        // 初期メッセージを設定
+        const chatMessages = document.getElementById('chatMessages');
+        const initialMessage = `こんにちは！My九電お客様サポートです。<br>
+                               どのようなご用件でしょうか？<br><br>
+                               【対応可能な内容】<br>
+                               ・電力契約のお手続き<br>
+                               ・料金プランのご相談<br>
+                               ・ご利用料金に関するお問い合わせ<br>
+                               ・停電情報の確認<br>
+                               ・その他各種お手続き<br><br>
+                               ご用件をお聞かせください。`;
+        
+        chatMessages.innerHTML = `
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="message-content">${initialMessage}</div>
+            </div>
+        `;
     }
-    
-    addBotMessage(initialMessage);
-
-    setTimeout(() => document.getElementById('chatInput').focus(), 300);
 }
 
 // チャットボットを閉じる
 function closeChat() {
     const modal = document.getElementById('chatModal');
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
+    if (modal) {
+        modal.style.display = 'none';
+    }
 }
 
-// 通常のチャットボットを開始
-function startChat() {
-    openChat(false);
-}
-
-// ライフスタイル診断チャットを開始
+// ライフスタイル診断チャット開始
 function startLifestyleChat() {
-    openChat(true);
-}
-
-// プラン選択ボタンからチャットを開始
-function selectPlan(planName) {
-    openChat(false);
-    chatState.selectedPlan = planName;
+    openChat();
     
-    // メッセージを少し調整して、選択されたプラン名を反映
-    const chatMessages = document.getElementById('chatMessages');
-    chatMessages.innerHTML = ''; // 初期メッセージをクリア
-    let initialMessage = `こんにちは！My九電のAIアシスタントです。<br>「<b>${planName}</b>」プランのお申込みですね。<br><br>${normalChatResponses[0].message}`;
-    addBotMessage(initialMessage);
+    // ライフスタイル診断の状態を初期化
+    lifestyleChatState = {
+        step: 0,
+        lifestyleAnswers: {}
+    };
+    
+    // 診断開始メッセージ
+    setTimeout(() => {
+        addBotMessage(lifestyleChatResponses[0].message);
+    }, 1000);
 }
 
-// メッセージ送信のハンドラ
+// プラン選択（申込みチャット開始）
+function selectPlan(planName) {
+    openChat();
+    
+    // 申込みチャットの状態を初期化
+    supportChatState = {
+        currentTopic: 'application',
+        userInfo: {},
+        step: 0,
+        selectedPlan: planName
+    };
+    
+    // プラン選択の確認メッセージ
+    setTimeout(() => {
+        addBotMessage(`「<b>${planName}</b>」プランのお申込みですね。<br><br>それでは、申込み手続きを開始いたします。<br><br>${normalChatResponses[0].message}`);
+    }, 1000);
+}
+
+// メッセージ送信
 function sendMessage() {
     const input = document.getElementById('chatInput');
-    const message = input.value.trim();
-    if (message === '') return;
-
-    addUserMessage(message);
-    input.value = '';
-    processUserInput(message);
+    if (input && input.value.trim()) {
+        addUserMessage(input.value);
+        processUserInput(input.value);
+        input.value = '';
+    }
 }
 
+// Enter キーでメッセージ送信
 function handleChatInput(event) {
     if (event.key === 'Enter') {
         sendMessage();
     }
 }
 
-// UIにメッセージを追加する関数群
+// ユーザーメッセージを追加
 function addUserMessage(message) {
     const chatMessages = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message user-message';
-    messageDiv.innerHTML = `<div class="message-avatar"><i class="fas fa-user"></i></div><div class="message-content">${message}</div>`;
+    messageDiv.innerHTML = `<div class="message-content">${message}</div>`;
     chatMessages.appendChild(messageDiv);
     scrollToBottom();
 }
 
+// ボットメッセージを追加
 function addBotMessage(message) {
     const chatMessages = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message bot-message';
-    messageDiv.innerHTML = `<div class="message-avatar"><i class="fas fa-robot"></i></div><div class="message-content">${message}</div>`;
+    messageDiv.innerHTML = `
+        <div class="message-avatar">
+            <i class="fas fa-headset"></i>
+        </div>
+        <div class="message-content">${message}</div>
+    `;
     chatMessages.appendChild(messageDiv);
     scrollToBottom();
 }
 
+// チャットエリアを最下部にスクロール
 function scrollToBottom() {
     const chatMessages = document.getElementById('chatMessages');
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 }
 
-// ユーザー入力を処理するメインロジック
+// ユーザー入力を処理（サポート用）
 function processUserInput(input) {
     setTimeout(() => {
-        if (chatState.isLifestyleChat) {
-            processLifestyleChat(input);
-        } else {
-            processNormalChat(input);
-        }
+        processSupportChat(input);
     }, 1000);
 }
 
-// 通常の申込みフローを処理
-function processNormalChat(input) {
-    const currentStep = chatState.step;
-    const response = normalChatResponses[currentStep];
-
-    switch (currentStep) {
-        case 0:
-            chatState.userInfo.name = input;
-            break;
-        case 1:
-            chatState.userInfo.phone = input;
-            break;
-        case 2:
-            chatState.userInfo.address = input;
-            break;
-        case 3:
-            chatState.userInfo.startDate = input;
-            break;
-        case 4:
-            if (input.toLowerCase().includes('はい')) {
-                addBotMessage(response.message);
-                chatState.step = -1; // 会話終了
-                return;
-            } else {
-                addBotMessage("承知いたしました。申込みを最初からやり直します。");
-                openChat(false); // 通常チャットをリスタート
-                return;
-            }
-    }
-
-    chatState.step = response.nextStep;
-    let nextMessage = normalChatResponses[chatState.step]?.message || '';
-
-    if (chatState.step === 4) { // 確認ステップ
-        nextMessage = nextMessage.replace('{name}', chatState.userInfo.name)
-                                 .replace('{phone}', chatState.userInfo.phone)
-                                 .replace('{address}', chatState.userInfo.address)
-                                 .replace('{plan}', chatState.selectedPlan)
-                                 .replace('{startDate}', chatState.userInfo.startDate);
+// サポートチャット処理
+function processSupportChat(input) {
+    const inputLower = input.toLowerCase();
+    
+    // 申込みチャットの処理
+    if (supportChatState.currentTopic === 'application') {
+        processApplicationChat(input);
+        return;
     }
     
-    if (nextMessage) {
-        addBotMessage(nextMessage);
-    }
-}
-
-// ライフスタイル診断フローを処理
-function processLifestyleChat(input) {
-    const currentStep = chatState.step;
-    const response = lifestyleChatResponses[currentStep];
-
-    switch (currentStep) {
-        case 0:
-            chatState.lifestyleAnswers.familySize = input;
-            break;
-        case 1:
-            chatState.lifestyleAnswers.allElectric = input.toLowerCase();
-            break;
-        case 2:
-            chatState.lifestyleAnswers.usageTime = input.toLowerCase();
-            const recommendedPlan = recommendPlan(chatState.lifestyleAnswers);
-            chatState.selectedPlan = recommendedPlan.name;
-            
-            const message = response.message.replace(/{plan}/g, recommendedPlan.name)
-                                           .replace('{description}', recommendedPlan.description);
-            addBotMessage(message);
-            chatState.step = response.nextStep;
-            return;
-        case 3:
-            if (input.toLowerCase().includes('はい')) {
-                chatState.isLifestyleChat = false; // 通常フローに切り替え
-                chatState.step = 0;
-                addBotMessage(lifestyleChatResponses[4].message);
-            } else {
-                addBotMessage("承知いたしました。ご不明な点がございましたら、いつでもお声がけください。");
-                closeChat();
-            }
-            return;
+    // ライフスタイル診断の処理
+    if (lifestyleChatState.step >= 0) {
+        processLifestyleChat(input);
+        return;
     }
     
-    chatState.step = response.nextStep;
-    if (lifestyleChatResponses[chatState.step]) {
-        addBotMessage(lifestyleChatResponses[chatState.step].message);
+    // キーワードに基づいてトピックを判定
+    if (inputLower.includes('契約') || inputLower.includes('申込') || inputLower.includes('新規') || inputLower.includes('解約')) {
+        supportChatState.currentTopic = 'contract';
+        supportChatState.step = 0;
+        addBotMessage(supportResponses.contract[0].message);
+    } else if (inputLower.includes('料金') || inputLower.includes('請求') || inputLower.includes('支払') || inputLower.includes('高い')) {
+        supportChatState.currentTopic = 'billing';
+        supportChatState.step = 0;
+        addBotMessage(supportResponses.billing[0].message);
+    } else if (inputLower.includes('プラン') || inputLower.includes('変更') || inputLower.includes('おすすめ')) {
+        supportChatState.currentTopic = 'plan';
+        supportChatState.step = 0;
+        addBotMessage(supportResponses.plan[0].message);
+    } else if (inputLower.includes('停電') || inputLower.includes('電気がつかない') || inputLower.includes('電気が使えない')) {
+        addBotMessage('停電情報についてお答えいたします。<br><br>現在、お客様の地域での停電は報告されておりません。<br><br>もし電気がご使用になれない場合は、以下をご確認ください：<br>・ブレーカーが落ちていないか<br>・電気料金のお支払い状況<br><br>それでも解決しない場合は、緊急連絡先までお電話ください。<br><br>緊急時連絡先: 0120-986-777（24時間対応）');
+    } else if (supportChatState.currentTopic && supportChatState.step >= 0) {
+        // 既存のトピック内での応答処理
+        const topic = supportChatState.currentTopic;
+        const currentStep = supportChatState.step;
+        
+        if (supportResponses[topic] && supportResponses[topic][currentStep + 1]) {
+            supportChatState.step++;
+            addBotMessage(supportResponses[topic][supportChatState.step].message);
+        } else {
+            // 会話終了
+            addBotMessage('他にご質問やご不明な点がございましたら、お気軽にお聞かせください。<br><br>詳しいご相談については、お電話でも承っております。<br><br>フリーダイヤル: 0120-986-302（平日9:00-18:00）');
+        }
+    } else {
+        // 一般的な応答
+        addBotMessage('申し訳ございません。もう一度詳しく教えていただけますか？<br><br>以下のようなご質問にお答えできます：<br><br>・電力契約について<br>・料金プランについて<br>・ご利用料金について<br>・停電情報について<br><br>または、お電話でのご相談も承っております。<br>フリーダイヤル: 0120-986-302（平日9:00-18:00）');
     }
-}
-
-// ライフスタイル情報に基づいてプランを推薦
-function recommendPlan(answers) {
-    const familySize = parseInt(answers.familySize) || 1;
-    const isAllElectric = answers.allElectric.includes('はい');
-    const usageTime = answers.usageTime;
-
-    if (isAllElectric) {
-        return {
-            name: '電化でナイト・セレクト',
-            reason: `お客様は<b>オール電化住宅</b>にお住まいとのことですので、夜間電力がお得になるこちらのプランが最適です。`,
-            description: '夜間の電気料金が昼間に比べて割安になり、給湯や暖房にかかる電気代を効率的に節約できます。さらに、特定の時間帯に電気の使用をシフトすることで、より大きなメリットを享受できます。'
-        };
-    }
-    
-    if (familySize >= 3) {
-        return {
-            name: 'スマートファミリープラン',
-            reason: `<b>3人以上</b>のご家族で、特に<b>夜間</b>に電気を多く使われるご家庭に最適なプランです。2年契約でさらにお得になります。`,
-            description: 'ご家族の生活サイクルに合わせやすい料金設定です。夜間のご使用量が多いほど、電気代の節約につながります。週末や休日の電気料金も考慮されています。'
-        };
-    }
-
-    return {
-        name: '従量電灯B',
-        reason: `電気のご使用量が比較的少なく、<b>昼間</b>の活動が多いお客様に適した、シンプルで分かりやすいプランです。`,
-        description: 'ご使用量に応じて料金が決まる、最も基本的なプランです。契約期間は1年で、ライフスタイルの変化に合わせて見直しやすいのが特徴です。'
-    };
 }
 
 // 実績カードのタブ機能
@@ -322,8 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
             switchUsageTab(targetTab);
         });
     });
-
-
 
     // 月間実績のナビゲーション
     const prevMonthBtn = document.querySelector('.prev-month');
@@ -378,4 +350,185 @@ document.addEventListener('DOMContentLoaded', function() {
             updateYearDisplay();
         });
     }
+
+    // 詳細リンクのクリックイベント（ecoアプリでポイント確認、プラン変更について確認）
+    const detailLinks = document.querySelectorAll('.detail-link');
+    detailLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // リンクのアニメーション
+            this.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+            
+            // リンクテキストに応じて異なる処理を実行
+            const linkText = this.textContent.trim();
+            
+            if (linkText === 'ecoアプリでポイント確認') {
+                // ecoアプリのポイント確認画面に遷移
+                alert('ecoアプリのポイント確認画面に移動します。\n\n現在のポイント: 1,250pt\n今月の獲得予定: 85pt');
+            } else if (linkText === 'プラン変更について確認') {
+                // プラン変更の詳細画面に遷移
+                alert('プラン変更の詳細画面に移動します。\n\n夜間の電気使用量が多いお客様には「夜トクプラン」がおすすめです。\n\n現在の料金プランから月額約1,200円の節約が可能です。');
+            } else {
+                // その他の詳細リンク
+                alert('詳細ページに移動します');
+            }
+        });
+    });
 });
+
+// 申込みチャット処理
+function processApplicationChat(input) {
+    const currentStep = supportChatState.step;
+    const response = normalChatResponses[currentStep];
+    
+    switch(currentStep) {
+        case 0: // 名前入力
+            supportChatState.userInfo.name = input;
+            break;
+        case 1: // 電話番号入力
+            supportChatState.userInfo.phone = input;
+            break;
+        case 2: // 住所入力
+            supportChatState.userInfo.address = input;
+            break;
+        case 3: // 契約開始日入力
+            supportChatState.userInfo.startDate = input;
+            break;
+        case 4: // 確認
+            if (input.toLowerCase().includes('はい') || input.toLowerCase().includes('yes')) {
+                addBotMessage(normalChatResponses[5].message);
+                supportChatState.step = -1; // 会話終了
+                return;
+            } else {
+                addBotMessage("承知いたしました。何か変更したい項目はございますか？");
+                return;
+            }
+    }
+    
+    // 次のステップに進む
+    supportChatState.step = response.nextStep;
+    let nextMessage = normalChatResponses[supportChatState.step]?.message || '';
+    
+    if (supportChatState.step === 4) { // 確認ステップ
+        nextMessage = nextMessage.replace('{name}', supportChatState.userInfo.name)
+                                 .replace('{phone}', supportChatState.userInfo.phone)
+                                 .replace('{address}', supportChatState.userInfo.address)
+                                 .replace('{plan}', supportChatState.selectedPlan)
+                                 .replace('{startDate}', supportChatState.userInfo.startDate);
+    }
+    
+    if (nextMessage) {
+        addBotMessage(nextMessage);
+    }
+}
+
+// ライフスタイル診断チャット処理
+function processLifestyleChat(input) {
+    const currentStep = lifestyleChatState.step;
+    const response = lifestyleChatResponses[currentStep];
+    
+    switch(currentStep) {
+        case 0: // 家族人数
+            lifestyleChatState.lifestyleAnswers.familySize = input;
+            break;
+        case 1: // オール電化
+            lifestyleChatState.lifestyleAnswers.allElectric = input.toLowerCase();
+            break;
+        case 2: // 使用時間帯
+            lifestyleChatState.lifestyleAnswers.usageTime = input.toLowerCase();
+            const recommendedPlan = recommendPlan(lifestyleChatState.lifestyleAnswers);
+            
+            // 診断結果メッセージを作成
+            let resultMessage = response.message.replace('{plan}', recommendedPlan.name)
+                                               .replace('{reason}', recommendedPlan.reason)
+                                               .replace('{description}', recommendedPlan.description);
+            addBotMessage(resultMessage);
+            lifestyleChatState.step = response.nextStep;
+            return;
+        case 3: // 申込み確認
+            if (input.toLowerCase().includes('はい') || input.toLowerCase().includes('yes')) {
+                // 申込みチャットに切り替え
+                supportChatState.currentTopic = 'application';
+                supportChatState.step = 0;
+                supportChatState.selectedPlan = recommendPlan(lifestyleChatState.lifestyleAnswers).name;
+                addBotMessage(lifestyleChatResponses[4].message);
+                return;
+            } else {
+                addBotMessage("承知いたしました。他にご質問がございましたら、お気軽にお聞きください。");
+                lifestyleChatState.step = -1; // 診断終了
+                return;
+            }
+    }
+    
+    // 次のステップに進む
+    lifestyleChatState.step = response.nextStep;
+    if (lifestyleChatResponses[lifestyleChatState.step]) {
+        addBotMessage(lifestyleChatResponses[lifestyleChatState.step].message);
+    }
+}
+
+// プラン推奨ロジック
+function recommendPlan(answers) {
+    const familySize = parseInt(answers.familySize) || 1;
+    const isAllElectric = answers.allElectric.includes('はい');
+    const isNightUsage = answers.usageTime.includes('夜間');
+    
+    if (isAllElectric && isNightUsage) {
+        return {
+            name: '電化でナイト・セレクト',
+            reason: 'オール電化住宅で夜間の電気使用量が多いため',
+            description: '夜間の電気料金が割安になり、オール電化住宅に最適なプランです。'
+        };
+    } else if (familySize >= 4) {
+        return {
+            name: 'スマートファミリープラン',
+            reason: '4人以上のご家族で電気使用量が多いため',
+            description: '2年契約でお得になる、ご家庭向けのプランです。'
+        };
+    } else if (isNightUsage) {
+        return {
+            name: '電化でナイト・セレクト',
+            reason: '夜間の電気使用量が多いため',
+            description: '夜間の電気料金が割安になるプランです。'
+        };
+    } else {
+        return {
+            name: '従量電灯B',
+            reason: '一般的な電気使用パターンのため',
+            description: '1年契約で、標準的な料金体系のプランです。'
+        };
+    }
+}
+
+// Qピコ履歴を開く
+function openQpicoHistory() {
+    const modal = document.getElementById('qpicoModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Qピコ履歴を閉じる
+function closeQpicoHistory() {
+    const modal = document.getElementById('qpicoModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+}
+
+// おすすめ賞品を表示
+function showRecommendations() {
+    alert('おすすめ賞品ページに移動します。\n\n【現在のポイントで交換可能】\n・電気料金割引券（100ピコ）\n・商品券500円分（150ピコ）\n・寄付（任意のポイント）\n\n【おすすめ】\n・電気料金割引券がお得です！\n・月額料金から100円割引されます。');
+}
+
+// さらに履歴を読み込む
+function loadMoreHistory() {
+    alert('さらに履歴を読み込みます。\n\n【追加履歴】\n・2025/07/20: 省エネチャレンジ +10ピコ\n・2025/07/18: アンケート回答 +3ピコ\n・2025/07/15: 月間目標達成 +5ピコ\n・2025/07/10: ログインポイント +2ピコ\n・2025/07/08: Web版検針票 +1ピコ');
+}
