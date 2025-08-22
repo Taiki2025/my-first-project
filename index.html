@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My九電</title>
+    <title>My九電 - AIチャットボット申込み</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -80,397 +80,205 @@
                 </div>
             </div>
 
-                    <!-- 予想電気料金カード -->
-        <div class="card estimate-card">
-            <div class="card-header">
-                <h3>今月の予想請求料金<i class="fas fa-question-circle"></i></h3>
-            </div>
-            <div class="estimate-period">
-                2025年8月分 (7月25日~8月26日)
-            </div>
-            <div class="estimate-sections">
-                <div class="estimate-section current-usage">
-                    <div class="section-header">
-                        <span>8月3日までのご利用分</span>
-                        <span class="days">10日間</span>
-                    </div>
-                    <div class="section-amount">3,515円</div>
+            <!-- 予想電気料金カード -->
+            <div class="card forecast-card">
+                <div class="card-header">
+                    <h3>予想電気料金 <i class="fas fa-question-circle"></i></h3>
+                    <p class="card-subtitle">2025年8月分 (7月25日~8月26日)</p>
                 </div>
-                <div class="estimate-section estimated-total">
-                    <div class="section-header">
-                        <span>予測請求料金 (直近の利用状況から予測)</span>
-                        <span class="days">33日間</span>
+                
+                <div class="forecast-section">
+                    <div class="forecast-item">
+                        <div class="forecast-label">
+                            <span>8月3日までのご利用分</span>
+                            <span class="period">10日間</span>
+                        </div>
+                        <div class="forecast-amount">3,515円</div>
                     </div>
-                    <div class="section-amount">11,428円</div>
-                </div>
-            </div>
-            <!-- みらいくんコメントセクション -->
-            <div class="mirai-comment">
-                <div class="mirai-avatar">
-                    <img src="矢上_My九電モバイル画面/九州電力「みらいくん」.png" alt="みらいくん" class="mirai-image">
-                </div>
-                <div class="comment-bubbles">
-                    <div class="comment-bubble">
-                        <div class="comment-text">
-                            このペースの使用量なら、<br>
-                            <strong>省エネチャレンジ成功</strong>だよ！
+                    
+                    <div class="forecast-item">
+                        <div class="forecast-label">
+                            <span>予想電気料金 (直近の利用状況から予想)</span>
+                            <span class="period">33日間</span>
                         </div>
-                        <div class="comment-detail-link">
-                            <a href="#" class="detail-link">ecoアプリでポイント確認</a>
-                        </div>
-                        <div class="comment-arrow"></div>
-                    </div>
-
-                    <div class="comment-bubble">
-                        <div class="comment-text">
-                            夜間の電気使用量が多いみたい。<br>
-                            <strong>プラン変更</strong>で料金をお安くできるかも！
-                        </div>
-                        <div class="comment-detail-link">
-                            <a href="#" class="detail-link">プラン変更について確認</a>
-                        </div>
-                        <div class="comment-arrow"></div>
+                        <div class="forecast-amount">11,428円</div>
                     </div>
                 </div>
-            </div>
-        </div>
-        </div>
 
-        <!-- 実績カード -->
-        <div class="card usage-card">
-            <div class="card-header">
-                <h3>実績<i class="fas fa-question-circle"></i></h3>
-            </div>
-
-            <!-- タブナビゲーション -->
-            <div class="tab-navigation">
-                <button class="tab-btn active" data-tab="yearly">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>年間実績</span>
-                </button>
-                <button class="tab-btn" data-tab="monthly">
-                    <i class="fas fa-calendar"></i>
-                    <span>月間実績</span>
-                </button>
-            </div>
-
-            <!-- 年間実績タブ -->
-            <div class="tab-content active" id="yearly-tab">
-                <div class="yearly-period-navigation">
-                    <button class="nav-btn prev-year">
-                        <i class="fas fa-chevron-left"></i>
-                        <span>前年</span>
+                <!-- ダッシュボードタブ -->
+                <div class="dashboard-tabs">
+                    <button class="tab-btn active" onclick="switchTab('monthly')">
+                        <i class="fas fa-calendar-alt"></i>
+                        月
                     </button>
-                    <span class="yearly-period-label">2025年8月～2026年7月</span>
-                    <button class="nav-btn next-year">
-                        <span>翌年</span>
-                        <i class="fas fa-chevron-right"></i>
+                    <button class="tab-btn" onclick="switchTab('weekly')">
+                        <i class="fas fa-calendar-week"></i>
+                        週
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('daily')">
+                        <i class="fas fa-calendar-day"></i>
+                        日
                     </button>
                 </div>
-
-                <div class="yearly-chart-container">
-                    <div class="chart-area">
-                        <div class="chart-y-axis">
-                            <span class="y-label">(kWh)</span>
-                            <div class="y-values">
-                                <span>40</span>
-                                <span>30</span>
-                                <span>20</span>
-                                <span>10</span>
-                                <span>0</span>
+                <div class="dashboard-content">
+                    <div id="monthly-chart" class="chart-container active">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <h4>月ごとの使用量</h4>
+                                <span class="chart-period">2025年6月〜8月</span>
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color"></div>
+                                    <span>使用量</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="chart-content">
+                        <div class="chart-area">
+                            <div class="chart-grid">
+                                <div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div>
+                            </div>
                             <div class="chart-bars">
-                                <!-- 当年の棒グラフ（8月〜翌年7月） -->
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 20%;" data-value="8"></div>
-                                    <span class="chart-x-axis-label">8</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 20%;" data-value="8"></div>
-                                    <span class="chart-x-axis-label">9</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 40%;" data-value="16"></div>
-                                    <span class="chart-x-axis-label">10</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 30%;" data-value="12"></div>
-                                    <span class="chart-x-axis-label">11</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 42.5%;" data-value="17"></div>
-                                    <span class="chart-x-axis-label">12</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 62.5%;" data-value="25"></div>
-                                    <span class="chart-x-axis-label">1</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 50%;" data-value="20"></div>
-                                    <span class="chart-x-axis-label">2</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 40%;" data-value="16"></div>
-                                    <span class="chart-x-axis-label">3</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 35%;" data-value="14"></div>
-                                    <span class="chart-x-axis-label">4</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 25%;" data-value="10"></div>
-                                    <span class="chart-x-axis-label">5</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 30%;" data-value="12"></div>
-                                    <span class="chart-x-axis-label">6</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar current-year" style="height: 35%;" data-value="14"></div>
-                                    <span class="chart-x-axis-label">7</span>
+                                <div class="chart-bar" style="height: 70%;"><div class="bar-fill"></div><div class="bar-label">6月</div><div class="bar-value">310kWh</div></div>
+                                <div class="chart-bar" style="height: 85%;"><div class="bar-fill"></div><div class="bar-label">7月</div><div class="bar-value">380kWh</div></div>
+                                <div class="chart-bar" style="height: 50%;"><div class="bar-fill"></div><div class="bar-label">8月</div><div class="bar-value">220kWh</div></div>
+                            </div>
+                        </div>
+                        <div class="chart-summary">
+                            <div class="summary-item"><span class="summary-label">平均</span><span class="summary-value">303kWh</span></div>
+                            <div class="summary-item"><span class="summary-label">前月比</span><span class="summary-value decrease">-160kWh</span></div>
+                            <div class="summary-item"><span class="summary-label">最大</span><span class="summary-value">380kWh</span></div>
+                        </div>
+                    </div>
+                    <div id="weekly-chart" class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <h4>週ごとの使用量</h4>
+                                <span class="chart-period">7月28日週〜8月4日週</span>
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-item"><div class="legend-color"></div><span>使用量</span></div>
+                            </div>
+                        </div>
+                        <div class="chart-area">
+                            <div class="chart-grid">
+                                <div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div>
+                            </div>
+                            <div class="chart-bars">
+                                <div class="chart-bar" style="height: 80%;"><div class="bar-fill"></div><div class="bar-label">7/28週</div><div class="bar-value">95kWh</div></div>
+                                <div class="chart-bar" style="height: 60%;"><div class="bar-fill"></div><div class="bar-label">8/4週</div><div class="bar-value">70kWh</div></div>
+                            </div>
+                        </div>
+                        <div class="chart-summary">
+                            <div class="summary-item"><span class="summary-label">平均</span><span class="summary-value">82.5kWh</span></div>
+                            <div class="summary-item"><span class="summary-label">前週比</span><span class="summary-value decrease">-25kWh</span></div>
+                            <div class="summary-item"><span class="summary-label">最大</span><span class="summary-value">95kWh</span></div>
+                        </div>
+                    </div>
+                    <div id="daily-chart" class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <h4>日ごとの使用量</h4>
+                                <span class="chart-period">2025年8月1日〜3日</span>
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color"></div>
+                                    <span>使用量</span>
                                 </div>
                             </div>
-
-                            <!-- 前年の線グラフ -->
-                            <svg class="line-chart previous-year" viewBox="0 0 340 200" style="min-width: 340px; width: 100%;">
-                                <polyline points="20.5,160 47.5,140 74.5,110 101.5,125 128.5,100 155.5,90 182.5,110 209.5,120 236.5,130 263.5,160 290.5,140 317.5,130" fill="none" stroke="#ff7043" stroke-width="2" stroke-dasharray="3,3"></polyline>
-                                <circle cx="20.5" cy="160" r="2" fill="#ff7043"></circle>
-                                <circle cx="47.5" cy="140" r="2" fill="#ff7043"></circle>
-                                <circle cx="74.5" cy="110" r="2" fill="#ff7043"></circle>
-                                <circle cx="101.5" cy="125" r="2" fill="#ff7043"></circle>
-                                <circle cx="128.5" cy="100" r="2" fill="#ff7043"></circle>
-                                <circle cx="155.5" cy="90" r="2" fill="#ff7043"></circle>
-                                <circle cx="182.5" cy="110" r="2" fill="#ff7043"></circle>
-                                <circle cx="209.5" cy="120" r="2" fill="#ff7043"></circle>
-                                <circle cx="236.5" cy="130" r="2" fill="#ff7043"></circle>
-                                <circle cx="263.5" cy="160" r="2" fill="#ff7043"></circle>
-                                <circle cx="290.5" cy="140" r="2" fill="#ff7043"></circle>
-                                <circle cx="317.5" cy="130" r="2" fill="#ff7043"></circle>
-                            </svg>
-                            
-                            <!-- 他の家庭の線グラフ -->
-                            <svg class="line-chart other-households" viewBox="0 0 340 200" style="min-width: 340px; width: 100%;">
-                                <polyline points="20.5,170 47.5,150 74.5,125 101.5,135 128.5,115 155.5,100 182.5,125 209.5,135 236.5,145 263.5,170 290.5,155 317.5,145" fill="none" stroke="#66bb6a" stroke-width="2" stroke-dasharray="3,3"></polyline>
-                                <circle cx="20.5" cy="170" r="2" fill="#66bb6a"></circle>
-                                <circle cx="47.5" cy="150" r="2" fill="#66bb6a"></circle>
-                                <circle cx="74.5" cy="125" r="2" fill="#66bb6a"></circle>
-                                <circle cx="101.5" cy="135" r="2" fill="#66bb6a"></circle>
-                                <circle cx="128.5" cy="115" r="2" fill="#66bb6a"></circle>
-                                <circle cx="155.5" cy="100" r="2" fill="#66bb6a"></circle>
-                                <circle cx="182.5" cy="125" r="2" fill="#66bb6a"></circle>
-                                <circle cx="209.5" cy="135" r="2" fill="#66bb6a"></circle>
-                                <circle cx="236.5" cy="145" r="2" fill="#66bb6a"></circle>
-                                <circle cx="263.5" cy="170" r="2" fill="#66bb6a"></circle>
-                                <circle cx="290.5" cy="155" r="2" fill="#66bb6a"></circle>
-                                <circle cx="317.5" cy="145" r="2" fill="#66bb6a"></circle>
-                            </svg>
                         </div>
-                        <div class="chart-x-axis" style="display: none;">
-                            <!-- ラベルは各棒グラフの下に移動したため、ここは非表示 -->
+                        <div class="chart-area">
+                            <div class="chart-grid">
+                                <div class="grid-line"></div>
+                                <div class="grid-line"></div>
+                                <div class="grid-line"></div>
+                                <div class="grid-line"></div>
+                            </div>
+                            <div class="chart-bars">
+                                <div class="chart-bar" style="height: 60%;">
+                                    <div class="bar-fill"></div>
+                                    <div class="bar-label">1日</div>
+                                    <div class="bar-value">12.5kWh</div>
+                                </div>
+                                <div class="chart-bar" style="height: 80%;">
+                                    <div class="bar-fill"></div>
+                                    <div class="bar-label">2日</div>
+                                    <div class="bar-value">16.8kWh</div>
+                                </div>
+                                <div class="chart-bar" style="height: 40%;">
+                                    <div class="bar-fill"></div>
+                                    <div class="bar-label">3日</div>
+                                    <div class="bar-value">9.2kWh</div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="chart-legend">
-                        <div class="legend-item">
-                            <div class="legend-color current-year"></div>
-                            <span>当年</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color previous-year"></div>
-                            <span>前年</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color other-households"></div>
-                            <span>他の家庭 (同契約)</span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="monthly-table">
-                    <h3>月別使用量</h3>
-                    <div class="table-container">
-                        <div class="table-header">
-                            <span>請求月</span>
-                            <span>当年(m³)</span>
-                            <span>前年(m³)</span>
-                        </div>
-                        <div class="table-row">
-                            <span>2025年7月分<br><small>2025/6/6 ~ 2025/7/4</small></span>
-                            <span>8</span>
-                            <span>12</span>
-                        </div>
-                        <div class="table-row">
-                            <span>2025年6月分<br><small>2025/5/9 ~ 2025/6/5</small></span>
-                            <span>8</span>
-                            <span>16</span>
-                        </div>
-                        <div class="table-row">
-                            <span>2025年5月分<br><small>2025/4/5 ~ 2025/5/8</small></span>
-                            <span>16</span>
-                            <span>-</span>
-                        </div>
-                        <div class="table-row">
-                            <span>2025年4月分<br><small>2025/3/7 ~ 2025/4/4</small></span>
-                            <span>12</span>
-                            <span>-</span>
-                        </div>
-                        <div class="table-row">
-                            <span>2025年3月分<br><small>2025/2/7 ~ 2025/3/6</small></span>
-                            <span>17</span>
-                            <span>-</span>
+                        <div class="chart-summary">
+                            <div class="summary-item">
+                                <span class="summary-label">平均使用量</span>
+                                <span class="summary-value">12.8kWh</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">前日比</span>
+                                <span class="summary-value decrease">-7.6kWh</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">最大使用量</span>
+                                <span class="summary-value">16.8kWh</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- 月間実績タブ -->
-            <div class="tab-content" id="monthly-tab">
-                <div class="month-navigation">
-                    <button class="nav-btn prev-month">
-                        <i class="fas fa-chevron-left"></i>
-                        <span>前月</span>
-                    </button>
-                    <div class="current-month">
-                        <div class="month-title">2025年8月分</div>
-                        <div class="month-period">7月25日～8月26日</div>
-                    </div>
-                    <button class="nav-btn next-month">
-                        <span>翌月</span>
+
+                <div class="forecast-actions">
+                    <button class="btn btn-accent">
+                        <i class="fas fa-bullhorn"></i>
+                        <span>おトクなお知らせ</span>
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
+            </div>
 
-                <!-- 月間データのスワイプコンテナ -->
-                <div class="monthly-swipe-container">
-                    <!-- 8月分 -->
-                    <div class="monthly-data active" data-month="8">
-                        <div class="usage-summary-card">
-                            <div class="summary-header">
-                                <span>8月分のご利用分</span>
-                                <i class="fas fa-question-circle"></i>
-                            </div>
-                            <div class="summary-amount">3,515円</div>
-                            <div class="usage-details">
-                                <span class="usage-label">ご使用量</span>
-                                <span class="usage-value">122kWh</span>
-                            </div>
+            <!-- AIチャットボットセクション -->
+            <div class="card chat-section">
+                <div class="card-header">
+                    <h3>AIチャットボットで簡単申込み</h3>
+                    <p>24時間いつでも、お客様のご都合に合わせてAIがサポート</p>
+                </div>
+                
+                <div class="chat-preview">
+                    <div class="chat-message bot">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
                         </div>
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <span class="chart-title">日別利用料グラフ(単位：kWh)</span>
-                            </div>
-                            <div class="chart-area">
-                                <div class="chart-scroll-wrapper">
-                                    <div class="chart-content-inner">
-                                        <div class="chart-bars">
-                                            <div class="bar" style="height: 65%;" data-value="13.0"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 62.5%;" data-value="12.5"></div><div class="bar" style="height: 35%;" data-value="7.0"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 70%;" data-value="14.0"></div><div class="bar" style="height: 57.5%;" data-value="11.5"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 52.5%;" data-value="10.5"></div><div class="bar" style="height: 45%;" data-value="9.0"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div>
-                                        </div>
-                                        <div class="chart-labels">
-                                            <span>7/25</span><span>7/26</span><span>7/27</span><span>7/28</span><span>7/29</span><span>7/30</span><span>7/31</span><span>8/1</span><span>8/2</span><span>8/3</span><span>8/4</span><span>8/5</span><span>8/6</span><span>8/7</span><span>8/8</span><span>8/9</span><span>8/10</span><span>8/11</span><span>8/12</span><span>8/13</span><span>8/14</span><span>8/15</span><span>8/16</span><span>8/17</span><span>8/18</span><span>8/19</span><span>8/20</span><span>8/21</span><span>8/22</span><span>8/23</span><span>8/24</span><span>8/25</span><span>8/26</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="seek-bar-container">
-                                <div class="seek-bar-thumb"></div>
-                            </div>
-                            <div class="chart-footer">
-                                <span class="chart-x-label">ご利用日</span>
-                            </div>
+                        <div class="message-content">
+                            こんにちは！My九電のAIアシスタントです。<br>
+                            電力契約のお手続きをサポートいたします。
                         </div>
                     </div>
-
-                    <!-- 7月分 -->
-                    <div class="monthly-data" data-month="7">
-                        <div class="usage-summary-card">
-                            <div class="summary-header">
-                                <span>7月分のご利用分</span>
-                                <i class="fas fa-question-circle"></i>
-                            </div>
-                            <div class="summary-amount">9,707円</div>
-                            <div class="usage-details">
-                                <span class="usage-label">ご使用量</span>
-                                <span class="usage-value">98kWh</span>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <span class="chart-title">日別利用料グラフ(単位：kWh)</span>
-                            </div>
-                            <div class="chart-area">
-                                <div class="chart-scroll-wrapper">
-                                    <div class="chart-content-inner">
-                                        <div class="chart-bars">
-                                            <div class="bar" style="height: 55%;" data-value="11.0"></div><div class="bar" style="height: 45%;" data-value="9.0"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 40%;" data-value="8.0"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 65%;" data-value="13.0"></div><div class="bar" style="height: 70%;" data-value="14.0"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 55%;" data-value="11.0"></div><div class="bar" style="height: 58%;" data-value="11.6"></div><div class="bar" style="height: 62%;" data-value="12.4"></div><div class="bar" style="height: 53%;" data-value="10.6"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 48%;" data-value="9.6"></div><div class="bar" style="height: 51%;" data-value="10.2"></div><div class="bar" style="height: 56%;" data-value="11.2"></div><div class="bar" style="height: 63%;" data-value="12.6"></div><div class="bar" style="height: 68%;" data-value="13.6"></div><div class="bar" style="height: 72%;" data-value="14.4"></div><div class="bar" style="height: 66%;" data-value="13.2"></div><div class="bar" style="height: 61%;" data-value="12.2"></div><div class="bar" style="height: 59%;" data-value="11.8"></div><div class="bar" style="height: 54%;" data-value="10.8"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 52%;" data-value="10.4"></div><div class="bar" style="height: 57%;" data-value="11.4"></div><div class="bar" style="height: 64%;" data-value="12.8"></div><div class="bar" style="height: 69%;" data-value="13.8"></div><div class="bar" style="height: 71%;" data-value="14.2"></div><div class="bar" style="height: 67%;" data-value="13.4"></div><div class="bar" style="height: 62%;" data-value="12.4"></div>
-                                        </div>
-                                        <div class="chart-labels">
-                                            <span>6/24</span><span>6/25</span><span>6/26</span><span>6/27</span><span>6/28</span><span>6/29</span><span>6/30</span><span>7/1</span><span>7/2</span><span>7/3</span><span>7/4</span><span>7/5</span><span>7/6</span><span>7/7</span><span>7/8</span><span>7/9</span><span>7/10</span><span>7/11</span><span>7/12</span><span>7/13</span><span>7/14</span><span>7/15</span><span>7/16</span><span>7/17</span><span>7/18</span><span>7/19</span><span>7/20</span><span>7/21</span><span>7/22</span><span>7/23</span><span>7/24</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="seek-bar-container">
-                                <div class="seek-bar-thumb"></div>
-                            </div>
-                            <div class="chart-footer">
-                                <span class="chart-x-label">ご利用日</span>
-                            </div>
+                    <div class="chat-message user">
+                        <div class="message-content">
+                            新規契約をしたいのですが
                         </div>
                     </div>
-
-                    <!-- 6月分 -->
-                    <div class="monthly-data" data-month="6">
-                        <div class="usage-summary-card">
-                            <div class="summary-header">
-                                <span>6月分のご利用分</span>
-                                <i class="fas fa-question-circle"></i>
-                            </div>
-                            <div class="summary-amount">8,441円</div>
-                            <div class="usage-details">
-                                <span class="usage-label">ご使用量</span>
-                                <span class="usage-value">85kWh</span>
-                            </div>
+                    <div class="chat-message bot">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
                         </div>
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <span class="chart-title">日別利用料グラフ(単位：kWh)</span>
-                            </div>
-                            <div class="chart-area">
-                                <div class="chart-scroll-wrapper">
-                                    <div class="chart-content-inner">
-                                        <div class="chart-bars">
-                                            <div class="bar" style="height: 40%;" data-value="8.0"></div><div class="bar" style="height: 35%;" data-value="7.0"></div><div class="bar" style="height: 45%;" data-value="9.0"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 55%;" data-value="11.0"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 65%;" data-value="13.0"></div><div class="bar" style="height: 58%;" data-value="11.6"></div><div class="bar" style="height: 52%;" data-value="10.4"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 48%;" data-value="9.6"></div><div class="bar" style="height: 46%;" data-value="9.2"></div><div class="bar" style="height: 49%;" data-value="9.8"></div><div class="bar" style="height: 53%;" data-value="10.6"></div><div class="bar" style="height: 59%;" data-value="11.8"></div><div class="bar" style="height: 63%;" data-value="12.6"></div><div class="bar" style="height: 68%;" data-value="13.6"></div><div class="bar" style="height: 64%;" data-value="12.8"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 56%;" data-value="11.2"></div><div class="bar" style="height: 51%;" data-value="10.2"></div><div class="bar" style="height: 47%;" data-value="9.4"></div><div class="bar" style="height: 44%;" data-value="8.8"></div><div class="bar" style="height: 42%;" data-value="8.4"></div><div class="bar" style="height: 45%;" data-value="9.0"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 55%;" data-value="11.0"></div><div class="bar" style="height: 61%;" data-value="12.2"></div><div class="bar" style="height: 66%;" data-value="13.2"></div><div class="bar" style="height: 60%;" data-value="12.0"></div>
-                                        </div>
-                                        <div class="chart-labels">
-                                            <span>5/25</span><span>5/26</span><span>5/27</span><span>5/28</span><span>5/29</span><span>5/30</span><span>5/31</span><span>6/1</span><span>6/2</span><span>6/3</span><span>6/4</span><span>6/5</span><span>6/6</span><span>6/7</span><span>6/8</span><span>6/9</span><span>6/10</span><span>6/11</span><span>6/12</span><span>6/13</span><span>6/14</span><span>6/15</span><span>6/16</span><span>6/17</span><span>6/18</span><span>6/19</span><span>6/20</span><span>6/21</span><span>6/22</span><span>6/23</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="seek-bar-container">
-                                <div class="seek-bar-thumb"></div>
-                            </div>
-                            <div class="chart-footer">
-                                <span class="chart-x-label">ご利用日</span>
-                            </div>
+                        <div class="message-content">
+                            承知いたしました！<br>
+                            お客様のご要望に合わせて最適なプランをご提案いたします。
                         </div>
                     </div>
                 </div>
-            
-        </div>
-    </div>
 
-        <!-- forecast-actions moved inside usage-card -->
-        <div class="forecast-actions">
-                <button class="btn btn-accent">
-                    <i class="fas fa-bullhorn"></i>
-                    <span>おトクなお知らせ</span>
-                    <i class="fas fa-chevron-right"></i>
-                </button>
+                <div class="chat-actions">
+                    <button class="btn btn-primary" onclick="startChat()">
+                        <i class="fas fa-comments"></i>
+                        チャットボットで申込み開始
+                    </button>
+                </div>
             </div>
-        </div>
 
             <!-- 料金プランセクション -->
             <div class="card plans-section">
@@ -518,142 +326,15 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Qピコポイントカード -->
-            <div class="card qpico-card">
-                <div class="card-header">
-                    <h3>Qピコ<i class="fas fa-question-circle"></i></h3>
-                </div>
-                <div class="qpico-content">
-                    <div class="qpico-points">
-                        <span class="points-number">158</span>
-                        <span class="points-unit">ピコ</span>
-                    </div>
-                    <div class="qpico-expiry">
-                        次回失効2ピコ 2025/12/31 失効
-                    </div>
-                    <button class="btn btn-outline qpico-history-btn" onclick="openQpicoHistory()">
-                        Qピコ履歴を確認する >
-                    </button>
-                </div>
-            </div>
         </main>
-
-        <!-- Qピコ履歴モーダル -->
-        <div id="qpicoModal" class="qpico-modal">
-            <div class="qpico-container">
-                <div class="qpico-header">
-                    <div class="qpico-title">
-                        <i class="fas fa-history"></i>
-                        Qピコ履歴
-                    </div>
-                    <button class="close-btn" onclick="closeQpicoHistory()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="qpico-content">
-                    <!-- 現在の残高セクション -->
-                    <div class="qpico-balance-card">
-                        <div class="balance-info">
-                            <div class="balance-number">160</div>
-                            <div class="balance-unit">ピコ</div>
-                            <div class="balance-expiry">次回失効 2ピコ 2025/12/31 失効</div>
-                        </div>
-                        <div class="balance-help">
-                            <span>Qピコとは?</span>
-                            <i class="fas fa-question-circle"></i>
-                        </div>
-                    </div>
-
-                    <!-- おすすめメッセージ -->
-                    <div class="qpico-recommendation">
-                        <div class="recommendation-avatar">
-                            <i class="fas fa-user-circle"></i>
-                        </div>
-                        <div class="recommendation-message">
-                            <div class="message-text">タロウさん、現在の保有ポイントで還元可能なおすすめ賞品をご紹介します!</div>
-                            <button class="btn btn-primary btn-sm" onclick="showRecommendations()">
-                                詳細を表示
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 契約情報セクション -->
-                    <div class="qpico-section">
-                        <div class="section-header">
-                            <i class="fas fa-plus"></i>
-                            <span>ご契約情報</span>
-                        </div>
-                    </div>
-
-                    <!-- Qピコ履歴セクション -->
-                    <div class="qpico-section">
-                        <div class="section-header">
-                            <i class="fas fa-history"></i>
-                            <span>Qピコ履歴</span>
-                        </div>
-                        <div class="history-list">
-                            <div class="history-item">
-                                <div class="history-points">+2 ピコ</div>
-                                <div class="history-details">
-                                    <div class="history-description">ログインポイント</div>
-                                    <div class="history-date">日付: 2025/08/02</div>
-                                    <div class="history-content">内容: 2025年8月分</div>
-                                </div>
-                            </div>
-                            <div class="history-item">
-                                <div class="history-points">+1 ピコ</div>
-                                <div class="history-details">
-                                    <div class="history-description">Web版検針票</div>
-                                    <div class="history-date">日付: 2025/07/28</div>
-                                    <div class="history-content">内容: 2025年7月分</div>
-                                </div>
-                            </div>
-                            <div class="history-item">
-                                <div class="history-points">+4 ピコ</div>
-                                <div class="history-details">
-                                    <div class="history-description">電気のご利用</div>
-                                    <div class="history-date">日付: 2025/07/26</div>
-                                    <div class="history-content">内容: 2025年7月分</div>
-                                </div>
-                            </div>
-                            <div class="history-item">
-                                <div class="history-points">+20 ピコ</div>
-                                <div class="history-details">
-                                    <div class="history-description">ご契約情報の追加</div>
-                                    <div class="history-date">日付: 2025/07/24</div>
-                                    <div class="history-content">内容: 2025年7月分</div>
-                                </div>
-                            </div>
-                            <div class="history-item">
-                                <div class="history-points">+5 ピコ</div>
-                                <div class="history-details">
-                                    <div class="history-description">ecoアプリ使用</div>
-                                    <div class="history-date">日付: 2025/07/22</div>
-                                    <div class="history-content">内容: 2025年7月分</div>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="btn btn-outline btn-load-more" onclick="loadMoreHistory()">
-                            さらに表示
-                        </button>
-                    </div>
-                </div>
-                <div class="qpico-footer">
-                    <button class="btn btn-outline btn-home" onclick="closeQpicoHistory()">
-                        ホームに戻る
-                    </button>
-                </div>
-            </div>
-        </div>
 
         <!-- チャットボットモーダル -->
         <div id="chatModal" class="chat-modal">
             <div class="chat-container">
                 <div class="chat-header">
                     <div class="chat-title">
-                        <i class="fas fa-headset"></i>
-                        My九電お客様サポート
+                        <i class="fas fa-robot"></i>
+                        My九電AIアシスタント
                     </div>
                     <button class="close-btn" onclick="closeChat()">
                         <i class="fas fa-times"></i>
@@ -662,17 +343,12 @@
                 <div class="chat-messages" id="chatMessages">
                     <div class="message bot-message">
                         <div class="message-avatar">
-                            <i class="fas fa-headset"></i>
+                            <i class="fas fa-robot"></i>
                         </div>
                         <div class="message-content">
-                            こんにちは！My九電お客様サポートです。<br>
-                            どのようなご用件でしょうか？<br><br>
-                            【対応可能な内容】<br>
-                            ・電力契約のお手続き<br>
-                            ・料金プランのご相談<br>
-                            ・ご利用料金に関するお問い合わせ<br>
-                            ・停電情報の確認<br>
-                            ・その他各種お手続き
+                            こんにちは！My九電のAIアシスタントです。<br>
+                            電力契約のお手続きをサポートいたします。<br><br>
+                            お客様のお名前を教えてください。
                         </div>
                     </div>
                 </div>
@@ -688,11 +364,14 @@
         <!-- フッター -->
         <footer class="app-footer">
             <div class="footer-links">
-                <a href="#" class="footer-link" onclick="openChat()">
-                    <i class="fas fa-comments"></i>
+                <a href="#" class="footer-link">
+                    <i class="fas fa-info-circle"></i>
                     <span>お客様サポート</span>
                 </a>
-
+                <a href="#" class="footer-link">
+                    <i class="fas fa-phone"></i>
+                    <span>緊急時連絡先</span>
+                </a>
                 <a href="#" class="footer-link">
                     <i class="fas fa-cog"></i>
                     <span>設定</span>
@@ -700,7 +379,13 @@
             </div>
         </footer>
 
-
+        <!-- カスタマーサポートボタン（フローティングアクションボタン） -->
+        <div class="customer-support-btn" onclick="openChat()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
+                <path d="M8 9H16V11H8V9ZM8 13H12V15H8V13ZM8 17H14V19H8V17Z" fill="currentColor"/>
+            </svg>
+        </div>
     </div>
 
     <script src="script.js"></script>
