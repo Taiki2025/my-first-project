@@ -473,6 +473,21 @@ body {
     z-index: 1;
 }
 
+/* 年間実績のチャートバー - より具体的なセレクター */
+.yearly-chart-container .chart-bars {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    height: 200px;
+    padding: 0 8px;
+    position: relative;
+    z-index: 5;
+    min-width: 500px; /* スクロールが確実に必要になる幅に設定 */
+    width: max-content;
+    flex-shrink: 0;
+    gap: 0 !important; /* gap を強制的に削除 */
+}
+
 /* 月間実績用のチャートバー */
 .monthly-data .chart-bars {
     display: flex;
@@ -483,6 +498,7 @@ body {
     position: relative;
     z-index: 5;
     min-width: 100%;
+    gap: 0; /* gapを削除して正確な位置合わせ */
 }
 
 .chart-bar {
@@ -1271,7 +1287,10 @@ body {
     padding: 16px 12px 20px 12px;
     display: flex;
     align-items: stretch;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; /* Firefoxでスクロールバー表示 */
 }
 
 .chart-y-axis {
@@ -1305,41 +1324,42 @@ body {
 .yearly-chart-container .chart-content {
     flex: 1;
     position: relative;
-    overflow-x: auto; /* 横スクロールを有効にする */
+    overflow-x: visible; /* chart-areaでスクロールを管理するため */
     overflow-y: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    /* スクロールバーを隠す */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
 }
 
-.yearly-chart-container .chart-content::-webkit-scrollbar {
-    display: none;
+.yearly-chart-container .chart-area::-webkit-scrollbar {
+    height: 8px; /* スクロールバーの高さを設定 */
 }
 
-.yearly-chart-container .chart-bars {
-    display: flex;
-    justify-content: flex-start; /* 左から順に配置 */
-    align-items: flex-end;
-    height: 200px; /* 高さを調整 */
-    padding: 0 8px;
-    position: relative;
-    z-index: 5;
-    min-width: 340px; /* 12個の棒グラフ + パディングの実際のサイズに対応 */
-    width: max-content;
+.yearly-chart-container .chart-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
 }
+
+.yearly-chart-container .chart-area::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.yearly-chart-container .chart-area::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 重複する設定を削除 - 上で統合済み */
 
 .yearly-chart-container .bar-container {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-    flex: 0 0 auto; /* flex-grow: 0, flex-shrink: 0, flex-basis: auto */
+    flex: 0 0 auto;
     height: 100%;
-    width: 25px; /* 固定幅をさらに半分に */
-    margin: 0 1px; /* 左右の余白をさらに縮小 */
+    width: 24px !important; /* 幅をさらに詰める */
+    margin: 0 1px !important; /* 余白を詰める */
 }
 
 .bar {
@@ -1357,7 +1377,7 @@ body {
 }
 
 .yearly-chart-container .bar {
-    width: 18px; /* 幅をさらに縮小 */
+    width: 18px !important; /* 幅をさらに詰める */
     background-color: #1976d2;
     border-radius: 3px 3px 0 0;
     position: relative;
@@ -1395,6 +1415,8 @@ body {
     top: 0;
     left: 0;
     height: 100%;
+    width: 100%;
+    min-width: 500px;
     z-index: 10;
     pointer-events: none; /* クリックイベントを棒グラフに通す */
 }
@@ -1405,6 +1427,12 @@ body {
     color: #555;
     font-weight: 500;
     text-align: center;
+}
+
+/* 年間実績の月ラベル調整 */
+.yearly-chart-container .chart-x-axis-label {
+    margin-top: 6px !important;
+    font-size: 11px !important;
 }
 
 .chart-legend {
@@ -1610,12 +1638,26 @@ body {
 .chart-scroll-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch; /* スムーズなスクロールのため */
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: thin; /* スクロールバーを表示 */
     margin-bottom: 8px;
 }
 
 .chart-scroll-wrapper::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    height: 8px; /* スクロールバーの高さ */
+}
+
+.chart-scroll-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.chart-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.chart-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
 }
 
 .chart-content-inner {
@@ -1624,8 +1666,8 @@ body {
 }
 
 .monthly-data .chart-bars .bar {
-    width: 28px; /* 月間実績の棒の幅を調整 */
-    margin: 0 3px; /* 棒の間隔を少し広く */
+    width: 20px; /* 月間実績の棒の幅を詰める */
+    margin: 0 2px; /* 棒の間隔を詰める */
     background-color: #ff9800;
     border-radius: 3px 3px 0 0;
     position: relative;
@@ -1674,23 +1716,25 @@ body {
     justify-content: flex-start; /* 左詰めに変更 */
     padding: 0 8px;
     margin-top: 8px;
+    gap: 0; /* gapを削除して正確な位置合わせ */
 }
 
 .monthly-data .chart-labels span {
     font-size: 10px;
     color: #666;
     text-align: center;
-    width: 34px; /* ラベルの幅を月間実績用に調整 */
+    width: 24px; /* ラベルの幅を棒グラフに合わせて調整 */
     margin: 0; /* マージンを削除 */
     flex-shrink: 0; /* ラベルが縮まないように */
 }
 
 .seek-bar-container {
-    height: 4px;
+    height: 6px;
     background: var(--gray-200);
-    border-radius: 2px;
+    border-radius: 3px;
     position: relative;
-    margin: 1rem 0;
+    margin: 0.75rem 0;
+    overflow: hidden;
 }
 
 .seek-bar-thumb {
@@ -1699,9 +1743,9 @@ body {
     left: 0;
     height: 100%;
     background: var(--primary-blue);
-    border-radius: 2px;
-    width: 20%;
-    transition: left 0.3s ease;
+    border-radius: 3px;
+    width: 33%; /* 現在の進行状況を反映 */
+    transition: width 0.3s ease;
 }
 
 .chart-footer {

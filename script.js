@@ -281,6 +281,31 @@ function showMonth(monthIndex) {
             data.classList.add('active');
         }
     });
+    
+    // 月のタイトルと期間を更新
+    updateMonthDisplay(monthIndex);
+}
+
+// 月のタイトル表示を更新する関数
+function updateMonthDisplay(monthIndex) {
+    const monthTitleElement = document.querySelector('.month-title');
+    const monthPeriodElement = document.querySelector('.month-period');
+    
+    // 月のデータ（index 0が8月、1が7月、2が6月）
+    const monthsData = [
+        { title: '2025年8月分', period: '7月25日～8月26日' },
+        { title: '2025年7月分', period: '6月24日～7月24日' },
+        { title: '2025年6月分', period: '5月25日～6月23日' }
+    ];
+    
+    if (monthIndex >= 0 && monthIndex < monthsData.length) {
+        if (monthTitleElement) {
+            monthTitleElement.textContent = monthsData[monthIndex].title;
+        }
+        if (monthPeriodElement) {
+            monthPeriodElement.textContent = monthsData[monthIndex].period;
+        }
+    }
 }
 
 // DOM読み込み完了時の初期化処理
@@ -301,12 +326,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevMonthBtn = document.querySelector('.prev-month');
     const nextMonthBtn = document.querySelector('.next-month');
 
-    let currentMonthIndex = 0;
+    let currentMonthIndex = 0; // 0が8月分（最新）
 
     if (prevMonthBtn) {
         prevMonthBtn.addEventListener('click', function() {
-            if (currentMonthIndex > 0) {
-                currentMonthIndex--;
+            // 前月ボタン：より古い月へ（index が増える）
+            const monthlyData = document.querySelectorAll('.monthly-data');
+            if (currentMonthIndex < monthlyData.length - 1) {
+                currentMonthIndex++;
                 showMonth(currentMonthIndex);
             }
         });
@@ -314,9 +341,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (nextMonthBtn) {
         nextMonthBtn.addEventListener('click', function() {
-            const monthlyData = document.querySelectorAll('.monthly-data');
-            if (currentMonthIndex < monthlyData.length - 1) {
-                currentMonthIndex++;
+            // 翌月ボタン：より新しい月へ（index が減る）
+            if (currentMonthIndex > 0) {
+                currentMonthIndex--;
                 showMonth(currentMonthIndex);
             }
         });
