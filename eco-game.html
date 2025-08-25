@@ -424,6 +424,7 @@
         };
 
         // クイズデータ（JSONファイルから読み込み）
+        let originalQuizData = [];
         let quizData = [];
         let gameSettings = {};
         let resultMessages = {};
@@ -434,21 +435,155 @@
                 const response = await fetch('data/game-data.json');
                 if (response.ok) {
                     const gameData = await response.json();
-                    quizData = gameData.quizData || [];
+                    originalQuizData = gameData.quizData || [];
+                    quizData = [...originalQuizData]; // コピーを作成
                     gameSettings = gameData.gameSettings || {};
                     resultMessages = gameData.resultMessages || {};
+                    
+                    console.log('JSONデータ読み込み成功:', originalQuizData.length, '問');
+                    console.log('最初の3問:', originalQuizData.slice(0, 3).map(q => q.question.substring(0, 30) + '...'));
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
             } catch (error) {
                 console.error('ゲームデータの読み込みに失敗しました:', error);
-                // フォールバックデータ
-                quizData = [
+                // フォールバックデータ（20問の完全なデータ）
+                originalQuizData = [
                     {
                         question: "エアコンの設定温度を1度上げると、年間で約何円の節約になりますか？",
                         options: ["約500円", "約1,000円", "約2,000円", "約3,000円"],
                         correct: 1,
                         explanation: "エアコンの設定温度を1度上げると、年間で約1,000円の電気代を節約できます。"
+                    },
+                    {
+                        question: "LED電球は白熱電球と比べて、消費電力は約何分の1ですか？",
+                        options: ["約1/3", "約1/6", "約1/10", "約1/15"],
+                        correct: 1,
+                        explanation: "LED電球は白熱電球と比べて、消費電力が約1/6になります。"
+                    },
+                    {
+                        question: "冷蔵庫の設定温度を「強」から「中」に変更すると、年間で約何円の節約になりますか？",
+                        options: ["約500円", "約1,000円", "約1,500円", "約2,000円"],
+                        correct: 2,
+                        explanation: "冷蔵庫の設定温度を「強」から「中」に変更すると、年間で約1,500円の節約になります。"
+                    },
+                    {
+                        question: "テレビの明るさを最大から標準に変更すると、消費電力は約何%削減できますか？",
+                        options: ["約10%", "約20%", "約30%", "約40%"],
+                        correct: 2,
+                        explanation: "テレビの明るさを最大から標準に変更すると、消費電力が約30%削減できます。"
+                    },
+                    {
+                        question: "洗濯機で洗濯物をまとめて洗うことで、年間で約何円の節約になりますか？",
+                        options: ["約1,000円", "約2,000円", "約3,000円", "約4,000円"],
+                        correct: 2,
+                        explanation: "洗濯物をまとめて洗うことで、年間で約3,000円の節約になります。"
+                    },
+                    {
+                        question: "電気ポットの保温機能を24時間使用すると、年間で約何円の電気代がかかりますか？",
+                        options: ["約3,000円", "約5,000円", "約7,000円", "約10,000円"],
+                        correct: 2,
+                        explanation: "電気ポットの保温機能を24時間使用すると、年間で約7,000円の電気代がかかります。"
+                    },
+                    {
+                        question: "電子レンジで温めるとき、食材を均等に並べることで、加熱時間を約何%短縮できますか？",
+                        options: ["約10%", "約20%", "約30%", "約40%"],
+                        correct: 1,
+                        explanation: "食材を均等に並べることで、加熱時間を約20%短縮できます。"
+                    },
+                    {
+                        question: "IHクッキングヒーターで調理する際、鍋底のサイズをIHプレートより小さくすると、熱効率はどうなりますか？",
+                        options: ["向上する", "低下する", "変わらない", "不定"],
+                        correct: 1,
+                        explanation: "鍋底のサイズをIHプレートより小さくすると、熱効率が低下します。"
+                    },
+                    {
+                        question: "温水洗浄便座の温水温度を「高」から「中」に変更すると、年間で約何円の節約になりますか？",
+                        options: ["約1,000円", "約2,000円", "約3,000円", "約4,000円"],
+                        correct: 1,
+                        explanation: "温水温度を「高」から「中」に変更すると、年間で約2,000円の節約になります。"
+                    },
+                    {
+                        question: "パソコンの画面の明るさを最大から標準に変更すると、消費電力は約何%削減できますか？",
+                        options: ["約15%", "約25%", "約35%", "約45%"],
+                        correct: 1,
+                        explanation: "画面の明るさを最大から標準に変更すると、消費電力が約25%削減できます。"
+                    },
+                    {
+                        question: "食器洗い機を使用する際、食器を適切に配置することで、洗浄時間を約何%短縮できますか？",
+                        options: ["約10%", "約20%", "約30%", "約40%"],
+                        correct: 1,
+                        explanation: "食器を適切に配置することで、洗浄時間を約20%短縮できます。"
+                    },
+                    {
+                        question: "掃除機の使用時間を1日10分短縮すると、年間で約何円の節約になりますか？",
+                        options: ["約500円", "約1,000円", "約1,500円", "約2,000円"],
+                        correct: 1,
+                        explanation: "使用時間を1日10分短縮すると、年間で約1,000円の節約になります。"
+                    },
+                    {
+                        question: "エアコンのフィルターを月1回掃除すると、消費電力は約何%削減できますか？",
+                        options: ["約5%", "約10%", "約15%", "約20%"],
+                        correct: 1,
+                        explanation: "フィルターを月1回掃除すると、消費電力が約10%削減できます。"
+                    },
+                    {
+                        question: "冷蔵庫に食品を詰め込みすぎると、冷気の循環が悪くなり、消費電力は約何%増加しますか？",
+                        options: ["約5%", "約10%", "約15%", "約20%"],
+                        correct: 2,
+                        explanation: "食品を詰め込みすぎると、消費電力が約15%増加します。"
+                    },
+                    {
+                        question: "電気ケトルでお湯を沸かす際、必要な量だけ沸かすことで、年間で約何円の節約になりますか？",
+                        options: ["約500円", "約1,000円", "約1,500円", "約2,000円"],
+                        correct: 1,
+                        explanation: "必要な量だけ沸かすことで、年間で約1,000円の節約になります。"
+                    },
+                    {
+                        question: "テレビを見ないときは主電源を切ることで、年間で約何円の節約になりますか？",
+                        options: ["約500円", "約1,000円", "約1,500円", "約2,000円"],
+                        correct: 1,
+                        explanation: "主電源を切ることで、年間で約1,000円の節約になります。"
+                    },
+                    {
+                        question: "洗濯機で洗濯物を乾燥機で乾かす代わりに、天日干しにすると、年間で約何円の節約になりますか？",
+                        options: ["約2,000円", "約4,000円", "約6,000円", "約8,000円"],
+                        correct: 2,
+                        explanation: "天日干しにすると、年間で約6,000円の節約になります。"
+                    },
+                    {
+                        question: "電子レンジで温めるとき、ラップをかけることで、加熱時間を約何%短縮できますか？",
+                        options: ["約10%", "約20%", "約30%", "約40%"],
+                        correct: 1,
+                        explanation: "ラップをかけることで、加熱時間を約20%短縮できます。"
+                    },
+                    {
+                        question: "IHクッキングヒーターで調理する際、鍋底の水滴を拭き取ってから使用すると、熱効率はどうなりますか？",
+                        options: ["向上する", "低下する", "変わらない", "不定"],
+                        correct: 0,
+                        explanation: "鍋底の水滴を拭き取ってから使用すると、熱効率が向上します。"
+                    },
+                    {
+                        question: "温水洗浄便座の便座保温機能をオフにすると、年間で約何円の節約になりますか？",
+                        options: ["約1,000円", "約2,000円", "約3,000円", "約4,000円"],
+                        correct: 1,
+                        explanation: "便座保温機能をオフにすると、年間で約2,000円の節約になります。"
                     }
                 ];
+                quizData = [...originalQuizData];
+                gameSettings = {
+                    quiz: {
+                        timeLimit: 30,
+                        pointsPerCorrect: 10,
+                        totalQuestions: 10
+                    }
+                };
+                resultMessages = {
+                    excellent: { title: "素晴らしい！", threshold: 80 },
+                    good: { title: "よくできました！", threshold: 60 },
+                    needsImprovement: { title: "もう少し頑張りましょう！", threshold: 0 }
+                };
+                console.log('フォールバックデータ使用:', originalQuizData.length, '問');
             }
         }
 
@@ -458,13 +593,21 @@
 
         async function startQuiz() {
             // ゲームデータが読み込まれていない場合は読み込む
-            if (quizData.length === 0) {
+            if (originalQuizData.length === 0) {
                 await initializeGameData();
             }
+            
+            console.log('クイズ開始 - 元データ数:', originalQuizData.length);
             
             gameState.currentGame = 'quiz';
             gameState.currentQuestion = 0;
             gameState.score = 0;
+            
+            // 元のデータから新しいコピーを作成してシャッフル
+            quizData = [...originalQuizData];
+            shuffleQuestions();
+            
+            console.log('シャッフル後のデータ数:', quizData.length);
             
             document.getElementById('gameSelection').style.display = 'none';
             document.getElementById('quizContainer').style.display = 'block';
@@ -473,15 +616,29 @@
             startTimer();
         }
 
+        function shuffleQuestions() {
+            // フィッシャー・イェーツのシャッフルアルゴリズム
+            for (let i = quizData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [quizData[i], quizData[j]] = [quizData[j], quizData[i]];
+            }
+            console.log('問題をシャッフルしました:', quizData.map(q => q.question.substring(0, 20) + '...'));
+        }
+
         function startMemoryGame() {
             alert('記憶ゲーム機能は準備中です。\n\n省エネアイテムのマッチングゲームで、\n省エネに関する知識を楽しく学べます。\n\n近日公開予定です！');
         }
 
         function loadQuestion() {
             const question = quizData[gameState.currentQuestion];
+            const totalQuestions = gameSettings.quiz?.totalQuestions || 10;
             document.getElementById('currentQuestion').textContent = gameState.currentQuestion + 1;
-            document.getElementById('totalQuestions').textContent = quizData.length;
+            document.getElementById('totalQuestions').textContent = totalQuestions;
             document.getElementById('quizQuestion').textContent = question.question;
+            
+            console.log(`問題 ${gameState.currentQuestion + 1}:`, question.question.substring(0, 30) + '...');
+            console.log('選択肢:', question.options);
+            console.log('正解:', question.correct);
             
             const optionsContainer = document.getElementById('quizOptions');
             optionsContainer.innerHTML = '';
@@ -557,7 +714,12 @@
         function nextQuestion() {
             gameState.currentQuestion++;
             
-            if (gameState.currentQuestion >= quizData.length) {
+            const totalQuestions = gameSettings.quiz?.totalQuestions || 10;
+            
+            console.log(`次の問題に進みます: ${gameState.currentQuestion + 1}/${totalQuestions}`);
+            console.log('現在のquizData:', quizData.map(q => q.question.substring(0, 30) + '...'));
+            
+            if (gameState.currentQuestion >= totalQuestions) {
                 showResult();
             } else {
                 loadQuestion();
@@ -588,7 +750,8 @@
             document.getElementById('gameResult').style.display = 'block';
             
             const pointsPerCorrect = gameSettings.quiz?.pointsPerCorrect || 10;
-            const maxScore = quizData.length * pointsPerCorrect;
+            const totalQuestions = gameSettings.quiz?.totalQuestions || 10;
+            const maxScore = totalQuestions * pointsPerCorrect;
             const percentage = Math.round((gameState.score / maxScore) * 100);
             
             // 結果メッセージをJSONから取得
@@ -622,10 +785,28 @@
             document.getElementById('totalScore').textContent = totalScore;
             document.getElementById('gamesPlayed').textContent = gamesPlayed;
             document.getElementById('correctAnswers').textContent = correctAnswers;
+            
+            // ローカルストレージに統計を保存
+            localStorage.setItem('ecoGameStats', JSON.stringify({
+                totalScore: totalScore,
+                gamesPlayed: gamesPlayed,
+                correctAnswers: correctAnswers
+            }));
         }
 
         function playAgain() {
-            startQuiz();
+            // 元のデータから新しいコピーを作成してシャッフル
+            quizData = [...originalQuizData];
+            shuffleQuestions();
+            
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            
+            document.getElementById('gameResult').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            
+            loadQuestion();
+            startTimer();
         }
 
         function backToSelection() {
@@ -638,7 +819,18 @@
         // ページ読み込み時にゲームデータを初期化
         document.addEventListener('DOMContentLoaded', function() {
             initializeGameData();
+            loadStats();
         });
+
+        function loadStats() {
+            const savedStats = localStorage.getItem('ecoGameStats');
+            if (savedStats) {
+                const stats = JSON.parse(savedStats);
+                document.getElementById('totalScore').textContent = stats.totalScore || 1250;
+                document.getElementById('gamesPlayed').textContent = stats.gamesPlayed || 8;
+                document.getElementById('correctAnswers').textContent = stats.correctAnswers || 24;
+            }
+        }
     </script>
 </body>
 </html>
