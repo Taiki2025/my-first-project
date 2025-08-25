@@ -487,6 +487,12 @@ function processUserInput(input) {
 function processSupportChat(input) {
     const inputLower = input.toLowerCase();
     
+    // 申込み処理の確認
+    if (supportChatState.currentTopic === 'application') {
+        processApplicationChat(input);
+        return;
+    }
+    
     // 初期選択肢からの処理
     if (input === 'contract' || input === 'plan' || input === 'billing' || input === 'outage' || input === 'other') {
         handleInitialChoice(input);
@@ -550,6 +556,62 @@ function processSupportChat(input) {
     } else {
         // 一般的な応答
         addBotMessage('申し訳ございません。もう一度詳しく教えていただけますか？<br><br>以下のようなご質問にお答えできます：<br><br>・電力契約について<br>・料金プランについて<br>・ご利用料金について<br>・停電情報について<br><br>チャットボットでお手伝いいたします。');
+    }
+}
+
+// 申込みチャット処理
+function processApplicationChat(input) {
+    const currentStep = supportChatState.step;
+    
+    switch(currentStep) {
+        case 0: // 申込み確認
+            if (input.toLowerCase().includes('はい') || input.toLowerCase().includes('yes') || input === 'はい') {
+                addBotMessage("承知いたしました。申込み手続きを開始いたします。<br><br>お客様のお名前を教えてください。");
+                supportChatState.step = 1;
+            } else {
+                addBotMessage("承知いたしました。他にご質問がございましたら、お気軽にお聞きください。", [
+                    {"text": "はい、他にも質問がある", "value": "more_questions"},
+                    {"text": "いいえ、これで終了", "value": "end"}
+                ]);
+                supportChatState.currentTopic = null;
+                supportChatState.step = 0;
+            }
+            return;
+        case 1: // お名前
+            supportChatState.userInfo = { name: input };
+            addBotMessage("ありがとうございます。お電話番号を教えてください。");
+            supportChatState.step = 2;
+            return;
+        case 2: // 電話番号
+            supportChatState.userInfo.phone = input;
+            addBotMessage("ありがとうございます。ご住所を教えてください。");
+            supportChatState.step = 3;
+            return;
+        case 3: // 住所
+            supportChatState.userInfo.address = input;
+            addBotMessage("ありがとうございます。契約開始希望日を教えてください。", [
+                {"text": "来月から", "value": "next_month"},
+                {"text": "来週から", "value": "next_week"},
+                {"text": "今月から", "value": "this_month"},
+                {"text": "その他", "value": "other"}
+            ]);
+            supportChatState.step = 4;
+            return;
+        case 4: // 契約開始日
+            supportChatState.userInfo.startDate = input;
+            
+            // 申込み完了メッセージ
+            const applicationNumber = Math.floor(Math.random() * 900000) + 100000;
+            const completionMessage = `申込み手続きが完了いたしました！<br><br><b>【申込み内容】</b><br>・プラン：${supportChatState.selectedPlan}<br>・お名前：${supportChatState.userInfo.name}<br>・電話番号：${supportChatState.userInfo.phone}<br>・ご住所：${supportChatState.userInfo.address}<br>・契約開始日：${supportChatState.userInfo.startDate}<br><br><b>【申込み番号】</b><br>${applicationNumber}<br><br>申込み番号は大切に保管してください。<br>担当者より3営業日以内にご連絡いたします。<br><br>他にご質問はございますか？`;
+            
+            addBotMessage(completionMessage, [
+                {"text": "はい、他にも質問がある", "value": "more_questions"},
+                {"text": "いいえ、これで終了", "value": "end"}
+            ]);
+            
+            supportChatState.currentTopic = null;
+            supportChatState.step = 0;
+            return;
     }
 }
 
@@ -639,6 +701,60 @@ function recommendPlan(answers) {
             description: '1年契約で、標準的な料金体系のプランです。'
         };
     }
+}
+
+// プラン選択処理
+function selectPlan(planName) {
+    const modal = document.getElementById('chatModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        
+        // 申込みチャットの状態を初期化
+        supportChatState.currentTopic = 'application';
+        supportChatState.step = 0;
+        supportChatState.selectedPlan = planName;
+        
+        const chatMessages = document.getElementById('chatMessages');
+        const planInfo = getPlanInfo(planName);
+        
+        const message = `「${planName}」を選択していただき、ありがとうございます。<br><br><div class='plan-details'><b>【プランの特徴】</b><br>${planInfo.description}</div><br>こちらのプランで申込み手続きを進めますか？`;
+        
+        chatMessages.innerHTML = `
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="message-content">${message}</div>
+            </div>
+        `;
+        
+        setTimeout(() => {
+            const choices = [
+                {"text": "はい、申込み手続きを進める", "value": "はい"},
+                {"text": "いいえ、他のプランも見たい", "value": "いいえ"}
+            ];
+            showChoiceButtons(choices);
+        }, 1000);
+    }
+}
+
+// プラン情報を取得
+function getPlanInfo(planName) {
+    const planInfo = {
+        'スマートファミリープラン': {
+            description: '2年契約でおトクになるご家庭のお客さま向けプランです。家族割引が適用され、ご家族が多いほどお得になります。'
+        },
+        '電化でナイト・セレクト': {
+            description: 'オール電化等のお客さま向けプランです。夜間の電気料金が割安になり、電気温水器や蓄熱式暖房機の使用に最適です。'
+        },
+        '従量電灯B': {
+            description: '1年契約で使用量が少ないご家庭のお客さま向けプランです。基本料金が安く、使用量に応じた従量料金が適用されます。'
+        }
+    };
+    
+    return planInfo[planName] || {
+        description: 'お客様に最適なプランです。'
+    };
 }
 
 // 初期選択肢の処理
