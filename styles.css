@@ -2205,7 +2205,7 @@ body {
 
 .qpico-header {
     background: var(--light-blue);
-    color: var(--white);
+    color: var(--gray-800);
     padding: 1rem 1.5rem;
     display: flex;
     justify-content: space-between;
