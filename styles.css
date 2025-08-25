@@ -142,7 +142,7 @@ body {
 
 /* アプリコンテンツ */
 .app-content {
-    padding: 0.5rem 0.75rem 1.5rem;
+    padding: 0.5rem 0.75rem 5rem;
     background: var(--light-blue);
     min-height: calc(100vh - 200px);
     max-width: 414px;
@@ -1123,13 +1123,14 @@ body {
     background: var(--white);
     border-top: 1px solid var(--gray-200);
     padding: 1rem;
-    position: sticky;
+    position: fixed;
     bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 10;
     max-width: 414px;
     width: 414px;
     box-sizing: border-box;
-    margin: 0 auto;
 }
 
 .footer-links {
@@ -2102,7 +2103,7 @@ body {
 }
 
 .qpico-container {
-    background: var(--white);
+    background: var(--gray-50);
     max-width: 414px;
     width: 100%;
     margin: 0 auto;
@@ -2132,6 +2133,7 @@ body {
 
 .qpico-content {
     padding: 1rem;
+    background: var(--gray-50);
 }
 
 /* 残高カード */
