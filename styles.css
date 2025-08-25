@@ -753,7 +753,7 @@ body {
 
 .plan-badge {
     position: absolute;
-    top: -0.5rem;
+    top: -0.75rem;
     left: 1rem;
     background: var(--accent-red);
     color: var(--white);
@@ -1192,9 +1192,6 @@ body {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    position: sticky;
-    top: 0;
-    z-index: 10;
 }
 
 .usage-card .tab-navigation::-webkit-scrollbar {
