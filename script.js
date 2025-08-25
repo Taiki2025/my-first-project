@@ -291,6 +291,12 @@ function openChat() {
             step: 0
         };
         
+        // ライフスタイル診断の状態をリセット
+        lifestyleChatState = {
+            step: -1,
+            lifestyleAnswers: {}
+        };
+        
         const chatMessages = document.getElementById('chatMessages');
         const initialMessage = `こんにちは！My九電お客様サポートです。<br>
                                どのようなご用件でしょうか？<br><br>
@@ -472,13 +478,7 @@ function scrollToBottom() {
 // ユーザー入力を処理
 function processUserInput(input) {
     setTimeout(() => {
-        // ライフスタイル診断の処理
-        if (lifestyleChatState && lifestyleChatState.step >= 0) {
-            processLifestyleChat(input);
-            return;
-        }
-        
-        // サポートチャットの処理
+        // サポートチャットの処理を優先
         processSupportChat(input);
     }, 1000);
 }
@@ -486,6 +486,12 @@ function processUserInput(input) {
 // サポートチャット処理
 function processSupportChat(input) {
     const inputLower = input.toLowerCase();
+    
+    // ライフスタイル診断の処理（おすすめプラン診断からの場合のみ）
+    if (lifestyleChatState && lifestyleChatState.step >= 0 && supportChatState.currentTopic !== 'outage') {
+        processLifestyleChat(input);
+        return;
+    }
     
     // 申込み処理の確認
     if (supportChatState.currentTopic === 'application') {
@@ -500,20 +506,25 @@ function processSupportChat(input) {
     }
     
     // 具体的な選択肢の処理
-    if (input === 'change_plan') {
-        addBotMessage("プラン変更についてお答えいたします。<br><br>現在のプランから変更可能なプランをご案内いたします。<br><br>お客様の現在のプランをお教えください。", [
-            {"text": "従量電灯B", "value": "current_plan_b"},
-            {"text": "電化でナイト・セレクト", "value": "current_plan_night"},
-            {"text": "スマートファミリープラン", "value": "current_plan_family"},
-            {"text": "その他", "value": "current_plan_other"}
-        ]);
-        return;
-    }
-    
+    handleStep1Choice(input);
+}
+
+// ステップ1の選択肢処理
+function handleStep1Choice(input) {
+    // 電力契約関連
     if (input === 'new_contract') {
         addBotMessage("新規契約についてお答えいたします。<br><br>新規契約のお手続きを承っております。<br><br>お客様のお名前を教えてください。");
         supportChatState.currentTopic = 'new_contract';
         supportChatState.step = 1;
+        return;
+    }
+    
+    if (input === 'change_contract') {
+        addBotMessage("契約変更についてお答えいたします。<br><br>どのような変更をご希望でしょうか？", [
+            {"text": "契約者名義の変更", "value": "change_name"},
+            {"text": "使用量の変更", "value": "change_usage"},
+            {"text": "その他", "value": "change_other"}
+        ]);
         return;
     }
     
@@ -526,7 +537,218 @@ function processSupportChat(input) {
         return;
     }
     
-    // キーワードに基づいてトピックを判定
+    if (input === 'check_contract') {
+        addBotMessage("契約内容の確認についてお答えいたします。<br><br>現在の契約内容をご確認いたします。<br><br>お客様のお名前とご住所をお教えください。");
+        supportChatState.currentTopic = 'check_contract';
+        supportChatState.step = 1;
+        return;
+    }
+    
+    // 料金関連
+    if (input === 'check_billing') {
+        addBotMessage("料金の確認についてお答えいたします。<br><br>現在の料金状況をご確認いたします。<br><br>お客様のお名前とご住所をお教えください。");
+        supportChatState.currentTopic = 'check_billing';
+        supportChatState.step = 1;
+        return;
+    }
+    
+    if (input === 'high_billing') {
+        addBotMessage("料金が高い場合についてお答えいたします。<br><br>料金を抑えるためのアドバイスをご案内いたします。<br><br>現在の月間使用量をお教えください。", [
+            {"text": "200kWh以下", "value": "usage_low"},
+            {"text": "200-400kWh", "value": "usage_medium"},
+            {"text": "400kWh以上", "value": "usage_high"}
+        ]);
+        return;
+    }
+    
+    if (input === 'change_payment') {
+        addBotMessage("支払い方法の変更についてお答えいたします。<br><br>現在の支払い方法をお教えください。", [
+            {"text": "口座振替", "value": "payment_bank"},
+            {"text": "クレジットカード", "value": "payment_credit"},
+            {"text": "コンビニ払い", "value": "payment_convenience"},
+            {"text": "その他", "value": "payment_other"}
+        ]);
+        return;
+    }
+    
+    if (input === 'reissue_bill') {
+        addBotMessage("請求書の再発行についてお答えいたします。<br><br>請求書の再発行手続きを承っております。<br><br>再発行希望の請求書の年月をお教えください。");
+        supportChatState.currentTopic = 'reissue_bill';
+        supportChatState.step = 1;
+        return;
+    }
+    
+    // プラン関連
+    if (input === 'change_plan') {
+        addBotMessage("プラン変更についてお答えいたします。<br><br>現在のプランから変更可能なプランをご案内いたします。<br><br>お客様の現在のプランをお教えください。", [
+            {"text": "従量電灯B", "value": "current_plan_b"},
+            {"text": "電化でナイト・セレクト", "value": "current_plan_night"},
+            {"text": "スマートファミリープラン", "value": "current_plan_family"},
+            {"text": "その他", "value": "current_plan_other"}
+        ]);
+        return;
+    }
+    
+    if (input === 'recommended_plan') {
+        addBotMessage("おすすめプランについてお答えいたします。<br><br>お客様に最適なプランをご提案いたします。<br><br>ライフスタイル診断を開始いたしますか？", [
+            {"text": "はい、診断を開始する", "value": "start_lifestyle"},
+            {"text": "いいえ、直接相談したい", "value": "direct_consultation"}
+        ]);
+        return;
+    }
+    
+    if (input === 'compare_plans') {
+        addBotMessage("プランの比較についてお答えいたします。<br><br>主要なプランの特徴をご説明いたします。<br><br>どのプランについて詳しく知りたいですか？", [
+            {"text": "従量電灯B", "value": "plan_detail_b"},
+            {"text": "電化でナイト・セレクト", "value": "plan_detail_night"},
+            {"text": "スマートファミリープラン", "value": "plan_detail_family"}
+        ]);
+        return;
+    }
+    
+    if (input === 'plan_details') {
+        addBotMessage("プランの詳細についてお答えいたします。<br><br>どのプランについて詳しく知りたいですか？", [
+            {"text": "従量電灯B", "value": "plan_detail_b"},
+            {"text": "電化でナイト・セレクト", "value": "plan_detail_night"},
+            {"text": "スマートファミリープラン", "value": "plan_detail_family"}
+        ]);
+        return;
+    }
+    
+    // その他
+    if (input === 'construction') {
+        addBotMessage("工事についてお答えいたします。<br><br>工事に関するご質問を承っております。<br><br>どのような工事についてお聞きでしょうか？", [
+            {"text": "新設工事", "value": "construction_new"},
+            {"text": "増設工事", "value": "construction_add"},
+            {"text": "修理工事", "value": "construction_repair"}
+        ]);
+        return;
+    }
+    
+    if (input === 'meter') {
+        addBotMessage("メーターについてお答えいたします。<br><br>メーターに関するご質問を承っております。<br><br>どのようなことでしょうか？", [
+            {"text": "メーターの確認", "value": "meter_check"},
+            {"text": "メーターの交換", "value": "meter_exchange"},
+            {"text": "メーターの故障", "value": "meter_trouble"}
+        ]);
+        return;
+    }
+    
+    if (input === 'emergency') {
+        addBotMessage("緊急時の連絡についてお答えいたします。<br><br>緊急時は以下の番号にお電話ください：<br><br><b>緊急時連絡先：0120-XXX-XXX</b><br><br>24時間対応いたします。<br><br>他にご質問はございますか？", [
+            {"text": "はい、他にも質問がある", "value": "more_questions"},
+            {"text": "いいえ、これで終了", "value": "end"}
+        ]);
+        return;
+    }
+    
+    if (input === 'general') {
+        addBotMessage("その他のお問い合わせについてお答えいたします。<br><br>どのようなご質問でしょうか？<br><br>具体的にお聞かせください。");
+        return;
+    }
+    
+    // ステップ2の選択肢処理
+    handleStep2Choice(input);
+}
+
+// ステップ2の選択肢処理
+function handleStep2Choice(input) {
+    // プラン詳細
+    if (input === 'plan_detail_b') {
+        addBotMessage("従量電灯Bプランについてご説明いたします。<br><br><b>【プランの特徴】</b><br>・1年契約で基本料金が安い<br>・使用量に応じた従量料金<br>・標準的な料金体系<br><br><b>【対象者】</b><br>・使用量が少ないご家庭<br>・標準的な電気使用パターン<br><br>他にご質問はございますか？", [
+            {"text": "はい、他にも質問がある", "value": "more_questions"},
+            {"text": "いいえ、これで終了", "value": "end"}
+        ]);
+        return;
+    }
+    
+    if (input === 'plan_detail_night') {
+        addBotMessage("電化でナイト・セレクトプランについてご説明いたします。<br><br><b>【プランの特徴】</b><br>・夜間の電気料金が割安<br>・オール電化住宅に最適<br>・電気温水器や蓄熱式暖房機に有利<br><br><b>【対象者】</b><br>・オール電化住宅<br>・夜間の電気使用量が多いご家庭<br><br>他にご質問はございますか？", [
+            {"text": "はい、他にも質問がある", "value": "more_questions"},
+            {"text": "いいえ、これで終了", "value": "end"}
+        ]);
+        return;
+    }
+    
+    if (input === 'plan_detail_family') {
+        addBotMessage("スマートファミリープランについてご説明いたします。<br><br><b>【プランの特徴】</b><br>・2年契約でお得<br>・家族割引が適用<br>・ご家族が多いほどお得<br><br><b>【対象者】</b><br>・4人以上のご家族<br>・電気使用量が多いご家庭<br><br>他にご質問はございますか？", [
+            {"text": "はい、他にも質問がある", "value": "more_questions"},
+            {"text": "いいえ、これで終了", "value": "end"}
+        ]);
+        return;
+    }
+    
+    // 使用量別アドバイス
+    if (input === 'usage_low') {
+        addBotMessage("200kWh以下の使用量についてアドバイスいたします。<br><br>現在の使用量は標準的です。<br><br>さらなる節約のためには：<br>・LED電球への交換<br>・エアコンの設定温度調整<br>・不要な電気機器の電源オフ<br><br>他にご質問はございますか？", [
+            {"text": "はい、他にも質問がある", "value": "more_questions"},
+            {"text": "いいえ、これで終了", "value": "end"}
+        ]);
+        return;
+    }
+    
+    if (input === 'usage_medium') {
+        addBotMessage("200-400kWhの使用量についてアドバイスいたします。<br><br>現在の使用量はやや多い傾向です。<br><br>節約のためには：<br>・プランの見直し<br>・使用時間帯の調整<br>・省エネ家電への交換<br><br>他にご質問はございますか？", [
+            {"text": "はい、他にも質問がある", "value": "more_questions"},
+            {"text": "いいえ、これで終了", "value": "end"}
+        ]);
+        return;
+    }
+    
+    if (input === 'usage_high') {
+        addBotMessage("400kWh以上の使用量についてアドバイスいたします。<br><br>現在の使用量は多い傾向です。<br><br>大幅な節約のためには：<br>・プランの変更を検討<br>・使用量の見直し<br>・省エネ診断の実施<br><br>他にご質問はございますか？", [
+            {"text": "はい、他にも質問がある", "value": "more_questions"},
+            {"text": "いいえ、これで終了", "value": "end"}
+        ]);
+        return;
+    }
+    
+    // 支払い方法変更
+    if (input === 'payment_bank') {
+        addBotMessage("口座振替への変更についてお答えいたします。<br><br>口座振替への変更手続きを承っております。<br><br>お客様のお名前とご住所をお教えください。");
+        supportChatState.currentTopic = 'change_payment_bank';
+        supportChatState.step = 1;
+        return;
+    }
+    
+    if (input === 'payment_credit') {
+        addBotMessage("クレジットカード払いへの変更についてお答えいたします。<br><br>クレジットカード払いへの変更手続きを承っております。<br><br>お客様のお名前とご住所をお教えください。");
+        supportChatState.currentTopic = 'change_payment_credit';
+        supportChatState.step = 1;
+        return;
+    }
+    
+    if (input === 'payment_convenience') {
+        addBotMessage("コンビニ払いへの変更についてお答えいたします。<br><br>コンビニ払いへの変更手続きを承っております。<br><br>お客様のお名前とご住所をお教えください。");
+        supportChatState.currentTopic = 'change_payment_convenience';
+        supportChatState.step = 1;
+        return;
+    }
+    
+    // ライフスタイル診断
+    if (input === 'start_lifestyle') {
+        addBotMessage("ライフスタイル診断を開始いたします。<br><br>お客様に最適なプランをご提案いたします。<br><br>ご家族の人数をお教えください。");
+        lifestyleChatState.step = 0;
+        return;
+    }
+    
+    if (input === 'direct_consultation') {
+        addBotMessage("直接相談についてお答えいたします。<br><br>お客様のご要望をお聞かせください。<br><br>どのようなことについて相談されたいでしょうか？");
+        return;
+    }
+    
+    // 終了処理
+    if (input === 'more_questions') {
+        addBotMessage("他にどのようなご質問でしょうか？<br><br>以下のようなご質問にお答えできます：<br><br>・電力契約について<br>・料金プランについて<br>・ご利用料金について<br>・停電情報について<br><br>チャットボットでお手伝いいたします。");
+        return;
+    }
+    
+    if (input === 'end') {
+        addBotMessage("ご利用ありがとうございました。<br><br>他にご質問がございましたら、いつでもお気軽にお聞きください。<br><br>チャットボットでお手伝いいたします。");
+        return;
+    }
+    
+    // キーワードに基づいてトピックを判定（フォールバック）
     if (inputLower.includes('契約') || inputLower.includes('申込') || inputLower.includes('新規') || inputLower.includes('解約')) {
         addBotMessage("電力契約についてお答えいたします。<br><br>どのようなご質問でしょうか？", [
             {"text": "新規契約について", "value": "new_contract"},
@@ -785,6 +1007,7 @@ function handleInitialChoice(choice) {
             ]);
             break;
         case 'outage':
+            supportChatState.currentTopic = 'outage';
             addBotMessage("停電情報についてお答えいたします。<br><br>現在、お客様のご住所で停電は発生しておりません。<br><br>電気がつかない場合は、以下の点をご確認ください：<br><br>・ブレーカーが落ちていないか<br>・コンセントが抜けていないか<br>・電球が切れていないか<br><br>ご確認いただいても解決しない場合は、チャットボットでご相談ください。<br><br>他にご質問はございますか？", [
                 {"text": "はい、他にも質問がある", "value": "more_questions"},
                 {"text": "いいえ、これで終了", "value": "end"}
