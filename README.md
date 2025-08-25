@@ -8,7 +8,23 @@
 - 料金プランの管理
 - 省エネチャレンジ
 - 省エネゲーム
-- チャットサポート
+- チャットサポート（選択肢ボタン対応）
+
+## チャットボット機能
+
+### 新機能：選択肢ボタン対応
+- **初期選択肢**: チャット開始時に6つの主要カテゴリから選択可能
+- **分岐選択肢**: 各トピック内で具体的な選択肢をボタンで表示
+- **自由入力対応**: 選択肢ボタンと同時に自由なテキスト入力も可能
+- **視覚的改善**: アイコン付きの選択肢ボタンで直感的な操作
+
+### 対応トピック
+1. **電力契約**: 新規契約、契約変更、解約手続き、契約内容確認
+2. **料金プラン**: プラン変更相談、詳細説明、おすすめ提案、プラン比較、ライフスタイル診断
+3. **ご利用料金**: 今月の料金確認、過去履歴、料金理由、支払い方法変更、計算方法
+4. **停電情報**: 現在の停電状況確認
+5. **ライフスタイル診断**: 家族人数、オール電化、使用時間帯に基づくプラン提案
+6. **その他**: その他のお問い合わせ対応
 
 ## ファイル構造
 
@@ -32,27 +48,49 @@ my-first-project/
 ## JSONデータファイル
 
 ### data/chat-responses.json
-チャットボットの応答パターンを管理します。
+チャットボットの応答パターンと選択肢を管理します。選択肢ボタンと自由入力の両方に対応しています。
 
 ```json
 {
   "normalChatResponses": {
     "0": {
       "message": "お客様のお名前を教えてください。",
-      "nextStep": 1
+      "nextStep": 1,
+      "choices": null
+    },
+    "4": {
+      "message": "この内容で申込みを完了しますか？",
+      "nextStep": 5,
+      "choices": [
+        {"text": "はい、申込みを完了する", "value": "yes"},
+        {"text": "いいえ、内容を修正する", "value": "no"}
+      ]
     }
   },
   "lifestyleChatResponses": {
     "0": {
       "message": "こんにちは！ライフスタイルに合わせた料金プランをご提案します。",
-      "nextStep": 1
+      "nextStep": 1,
+      "choices": [
+        {"text": "1人", "value": "1"},
+        {"text": "2人", "value": "2"},
+        {"text": "3人", "value": "3"},
+        {"text": "4人", "value": "4"},
+        {"text": "5人以上", "value": "5"}
+      ]
     }
   },
   "supportResponses": {
     "contract": {
       "0": {
         "message": "電力契約についてご案内いたします。",
-        "nextStep": 1
+        "nextStep": 1,
+        "choices": [
+          {"text": "新規契約", "value": "新規契約"},
+          {"text": "契約変更", "value": "契約変更"},
+          {"text": "解約手続き", "value": "解約手続き"},
+          {"text": "契約内容の確認", "value": "確認"}
+        ]
       }
     }
   },
@@ -60,7 +98,15 @@ my-first-project/
     "outage": "停電情報についてお答えいたします。",
     "default": "申し訳ございません。もう一度詳しく教えてください。",
     "end": "他にご質問はございますか？"
-  }
+  },
+  "initialChoices": [
+    {"text": "電力契約について", "value": "contract", "icon": "fas fa-file-contract"},
+    {"text": "料金プランについて", "value": "plan", "icon": "fas fa-credit-card"},
+    {"text": "ご利用料金について", "value": "billing", "icon": "fas fa-yen-sign"},
+    {"text": "停電情報の確認", "value": "outage", "icon": "fas fa-exclamation-triangle"},
+    {"text": "ライフスタイル診断", "value": "lifestyle", "icon": "fas fa-user-check"},
+    {"text": "その他のお問い合わせ", "value": "other", "icon": "fas fa-question-circle"}
+  ]
 }
 ```
 

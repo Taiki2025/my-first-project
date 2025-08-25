@@ -2,90 +2,245 @@
   "normalChatResponses": {
     "0": {
       "message": "お客様のお名前を教えてください。",
-      "nextStep": 1
+      "nextStep": 1,
+      "choices": null
     },
     "1": {
       "message": "ありがとうございます。次に、お客様の電話番号を教えてください。",
-      "nextStep": 2
+      "nextStep": 2,
+      "choices": null
     },
     "2": {
       "message": "承知いたしました。お客様の住所を教えてください。",
-      "nextStep": 3
+      "nextStep": 3,
+      "choices": null
     },
     "3": {
       "message": "ありがとうございます！<br><br>最後に、契約開始希望日を教えてください。（例：2025年8月5日）",
-      "nextStep": 4
+      "nextStep": 4,
+      "choices": null
     },
     "4": {
-      "message": "ありがとうございます！<br><br>お客様の申込み内容を確認させていただきます：<br><br>お名前：{name}<br>電話番号：{phone}<br>住所：{address}<br>選択プラン：{plan}<br>契約開始日：{startDate}<br><br>この内容で申込みを完了しますか？（はい／いいえ）",
-      "nextStep": 5
+      "message": "ありがとうございます！<br><br>お客様の申込み内容を確認させていただきます：<br><br>お名前：{name}<br>電話番号：{phone}<br>住所：{address}<br>選択プラン：{plan}<br>契約開始日：{startDate}<br><br>この内容で申込みを完了しますか？",
+      "nextStep": 5,
+      "choices": [
+        {"text": "はい、申込みを完了する", "value": "yes"},
+        {"text": "いいえ、内容を修正する", "value": "no"}
+      ]
     },
     "5": {
-      "message": "申込みありがとうございます！<br><br>お客様の申込みを受け付けました。後日、担当者よりご連絡いたします。",
-      "nextStep": -1
+      "message": "申込みありがとうございます！<br><br>お客様の申込みを受け付けました。後日、担当者よりご連絡いたします。<br><br>他にご質問はございますか？",
+      "nextStep": -1,
+      "choices": [
+        {"text": "はい、他にも質問がある", "value": "more_questions"},
+        {"text": "いいえ、これで終了", "value": "end"}
+      ]
+    },
+    "6": {
+      "message": "どのようなご質問でしょうか？<br><br>お選びください：",
+      "nextStep": -1,
+      "choices": [
+        {"text": "電力契約について", "value": "contract", "icon": "fas fa-file-contract"},
+        {"text": "料金プランについて", "value": "plan", "icon": "fas fa-credit-card"},
+        {"text": "ご利用料金について", "value": "billing", "icon": "fas fa-yen-sign"},
+        {"text": "停電情報の確認", "value": "outage", "icon": "fas fa-exclamation-triangle"},
+        {"text": "その他のお問い合わせ", "value": "other", "icon": "fas fa-question-circle"}
+      ]
     }
   },
   "lifestyleChatResponses": {
     "0": {
-      "message": "こんにちは！ライフスタイルに合わせた料金プランをご提案します。<br><br>まず、ご家族の人数を教えていただけますか？（例：3人）",
-      "nextStep": 1
+      "message": "こんにちは！ライフスタイルに合わせた料金プランをご提案します。<br><br>まず、ご家族の人数を教えていただけますか？",
+      "nextStep": 1,
+      "choices": [
+        {"text": "1人", "value": "1"},
+        {"text": "2人", "value": "2"},
+        {"text": "3人", "value": "3"},
+        {"text": "4人", "value": "4"},
+        {"text": "5人以上", "value": "5"}
+      ]
     },
     "1": {
-      "message": "ありがとうございます。お住まいはオール電化住宅ですか？（はい／いいえ）",
-      "nextStep": 2
+      "message": "ありがとうございます。お住まいはオール電化住宅ですか？",
+      "nextStep": 2,
+      "choices": [
+        {"text": "はい", "value": "はい"},
+        {"text": "いいえ", "value": "いいえ"}
+      ]
     },
     "2": {
-      "message": "承知いたしました。主に電気をお使いになる時間帯は昼間と夜間のどちらが多いですか？（昼間／夜間）",
-      "nextStep": 3
+      "message": "承知いたしました。主に電気をお使いになる時間帯はどちらが多いですか？",
+      "nextStep": 3,
+      "choices": [
+        {"text": "昼間が多い", "value": "昼間"},
+        {"text": "夜間が多い", "value": "夜間"},
+        {"text": "どちらも同じくらい", "value": "同じ"}
+      ]
     },
     "3": {
-      "message": "診断ありがとうございます！<br><br>お客様のライフスタイルから、最適なプランとして「<b>{plan}</b>」をご提案します。<br><br><div class='recommendation-reason'><b>【ご提案理由】</b><br>{reason}</div><div class='plan-details'><b>【プランの特徴】</b><br>{description}</div><br>こちらのプランで申込み手続きを進めますか？（はい／いいえ）",
-      "nextStep": 4
+      "message": "診断ありがとうございます！<br><br>お客様のライフスタイルから、最適なプランとして「<b>{plan}</b>」をご提案します。<br><br><div class='recommendation-reason'><b>【ご提案理由】</b><br>{reason}</div><div class='plan-details'><b>【プランの特徴】</b><br>{description}</div><br>こちらのプランで申込み手続きを進めますか？",
+      "nextStep": 4,
+      "choices": [
+        {"text": "はい、申込み手続きを進める", "value": "はい"},
+        {"text": "いいえ、他のプランも見たい", "value": "いいえ"}
+      ]
     },
     "4": {
       "message": "承知いたしました。それでは、申込み手続きを開始します。<br><br>お客様のお名前を教えてください。",
-      "nextStep": "switchToNormal_0"
+      "nextStep": "switchToNormal_0",
+      "choices": null
     }
   },
   "supportResponses": {
     "contract": {
       "0": {
-        "message": "電力契約についてご案内いたします。<br><br>新規契約をご希望でしょうか？それとも契約変更でしょうか？<br><br>1. 新規契約<br>2. 契約変更<br>3. 解約手続き<br><br>番号でお答えください。",
-        "nextStep": 1
+        "message": "電力契約についてご案内いたします。<br><br>どのようなお手続きをご希望でしょうか？",
+        "nextStep": 1,
+        "choices": [
+          {"text": "新規契約", "value": "新規契約"},
+          {"text": "契約変更", "value": "契約変更"},
+          {"text": "解約手続き", "value": "解約手続き"},
+          {"text": "契約内容の確認", "value": "確認"}
+        ]
       },
       "1": {
         "message": "承知いたしました。詳しいお手続きについて、担当者よりご連絡させていただきます。<br><br>お電話番号を教えていただけますか？",
-        "nextStep": 2
+        "nextStep": 2,
+        "choices": null
       },
       "2": {
         "message": "ありがとうございます。2営業日以内に担当者よりご連絡いたします。<br><br>他にご質問はございますか？",
-        "nextStep": -1
+        "nextStep": 3,
+        "choices": [
+          {"text": "はい、他にも質問がある", "value": "more_questions"},
+          {"text": "いいえ、これで終了", "value": "end"}
+        ]
+      },
+      "3": {
+        "message": "どのようなご質問でしょうか？<br><br>お選びください：",
+        "nextStep": -1,
+        "choices": [
+          {"text": "料金プランについて", "value": "plan", "icon": "fas fa-credit-card"},
+          {"text": "ご利用料金について", "value": "billing", "icon": "fas fa-yen-sign"},
+          {"text": "停電情報の確認", "value": "outage", "icon": "fas fa-exclamation-triangle"},
+          {"text": "その他のお問い合わせ", "value": "other", "icon": "fas fa-question-circle"}
+        ]
       }
     },
     "billing": {
       "0": {
-        "message": "ご利用料金についてお答えいたします。<br><br>1. 今月の料金確認<br>2. 過去の料金履歴<br>3. 料金が高い理由<br>4. 支払い方法の変更<br><br>どちらについてお知りになりたいですか？",
-        "nextStep": 1
+        "message": "ご利用料金についてお答えいたします。<br><br>どのような内容についてお知りになりたいですか？",
+        "nextStep": 1,
+        "choices": [
+          {"text": "今月の料金確認", "value": "今月の料金"},
+          {"text": "過去の料金履歴", "value": "過去の履歴"},
+          {"text": "料金が高い理由", "value": "料金の理由"},
+          {"text": "支払い方法の変更", "value": "支払い方法"},
+          {"text": "料金の計算方法", "value": "計算方法"}
+        ]
       },
       "1": {
-        "message": "詳細な情報は、My九電アプリの「ご利用料金」画面でご確認いただけます。<br><br>さらに詳しい内容については、お電話でのご相談も承っております。<br><br>フリーダイヤル: 0120-986-302<br>（平日9:00-18:00）",
-        "nextStep": -1
+        "message": "詳細な情報は、My九電アプリの「ご利用料金」画面でご確認いただけます。<br><br>さらに詳しい内容については、お電話でのご相談も承っております。<br><br>フリーダイヤル: 0120-986-302<br>（平日9:00-18:00）<br><br>他にご質問はございますか？",
+        "nextStep": 2,
+        "choices": [
+          {"text": "はい、他にも質問がある", "value": "more_questions"},
+          {"text": "いいえ、これで終了", "value": "end"}
+        ]
+      },
+      "2": {
+        "message": "どのようなご質問でしょうか？<br><br>お選びください：",
+        "nextStep": -1,
+        "choices": [
+          {"text": "電力契約について", "value": "contract", "icon": "fas fa-file-contract"},
+          {"text": "料金プランについて", "value": "plan", "icon": "fas fa-credit-card"},
+          {"text": "停電情報の確認", "value": "outage", "icon": "fas fa-exclamation-triangle"},
+          {"text": "その他のお問い合わせ", "value": "other", "icon": "fas fa-question-circle"}
+        ]
       }
     },
     "plan": {
       "0": {
-        "message": "料金プランについてご案内いたします。<br><br>現在ご利用中のプランから変更をご検討でしょうか？<br><br>1. プラン変更の相談<br>2. プランの詳細説明<br>3. おすすめプランの提案<br><br>番号でお選びください。",
-        "nextStep": 1
+        "message": "料金プランについてご案内いたします。<br><br>どのようなご相談でしょうか？",
+        "nextStep": 1,
+        "choices": [
+          {"text": "プラン変更の相談", "value": "プラン変更"},
+          {"text": "プランの詳細説明", "value": "詳細説明"},
+          {"text": "おすすめプランの提案", "value": "おすすめ提案"},
+          {"text": "プラン比較", "value": "比較"}
+        ]
       },
       "1": {
-        "message": "お客様のライフスタイルに最適なプランをご提案いたします。<br><br>詳しい診断とお手続きについては、専門スタッフがご対応いたします。<br><br>お電話でのご相談をご希望の場合は、フリーダイヤルまでお電話ください。<br><br>0120-986-302（平日9:00-18:00）",
-        "nextStep": -1
+        "message": "お客様のライフスタイルに最適なプランをご提案いたします。<br><br>詳しい診断とお手続きについては、専門スタッフがご対応いたします。<br><br>お電話でのご相談をご希望の場合は、フリーダイヤルまでお電話ください。<br><br>0120-986-302（平日9:00-18:00）<br><br>他にご質問はございますか？",
+        "nextStep": 2,
+        "choices": [
+          {"text": "はい、他にも質問がある", "value": "more_questions"},
+          {"text": "いいえ、これで終了", "value": "end"}
+        ]
+      },
+      "2": {
+        "message": "どのようなご質問でしょうか？<br><br>お選びください：",
+        "nextStep": -1,
+        "choices": [
+          {"text": "電力契約について", "value": "contract", "icon": "fas fa-file-contract"},
+          {"text": "ご利用料金について", "value": "billing", "icon": "fas fa-yen-sign"},
+          {"text": "停電情報の確認", "value": "outage", "icon": "fas fa-exclamation-triangle"},
+          {"text": "その他のお問い合わせ", "value": "other", "icon": "fas fa-question-circle"}
+        ]
+      }
+    },
+    "outage": {
+      "0": {
+        "message": "停電情報についてお答えいたします。<br><br>現在、お客様の地域での停電は報告されておりません。<br><br>もし電気がご使用になれない場合は、以下をご確認ください：<br>・ブレーカーが落ちていないか<br>・電気料金のお支払い状況<br><br>それでも解決しない場合は、緊急連絡先までお電話ください。<br><br>緊急時連絡先: 0120-986-777（24時間対応）<br><br>他にご質問はございますか？",
+        "nextStep": 1,
+        "choices": [
+          {"text": "はい、他にも質問がある", "value": "more_questions"},
+          {"text": "いいえ、これで終了", "value": "end"}
+        ]
+      },
+      "1": {
+        "message": "どのようなご質問でしょうか？<br><br>お選びください：",
+        "nextStep": -1,
+        "choices": [
+          {"text": "電力契約について", "value": "contract", "icon": "fas fa-file-contract"},
+          {"text": "料金プランについて", "value": "plan", "icon": "fas fa-credit-card"},
+          {"text": "ご利用料金について", "value": "billing", "icon": "fas fa-yen-sign"},
+          {"text": "その他のお問い合わせ", "value": "other", "icon": "fas fa-question-circle"}
+        ]
+      }
+    },
+    "other": {
+      "0": {
+        "message": "その他のお問い合わせについて承っております。<br><br>詳しい内容をお聞かせください。<br><br>または、お電話でのご相談も承っております。<br>フリーダイヤル: 0120-986-302（平日9:00-18:00）<br><br>他にご質問はございますか？",
+        "nextStep": 1,
+        "choices": [
+          {"text": "はい、他にも質問がある", "value": "more_questions"},
+          {"text": "いいえ、これで終了", "value": "end"}
+        ]
+      },
+      "1": {
+        "message": "どのようなご質問でしょうか？<br><br>お選びください：",
+        "nextStep": -1,
+        "choices": [
+          {"text": "電力契約について", "value": "contract", "icon": "fas fa-file-contract"},
+          {"text": "料金プランについて", "value": "plan", "icon": "fas fa-credit-card"},
+          {"text": "ご利用料金について", "value": "billing", "icon": "fas fa-yen-sign"},
+          {"text": "停電情報の確認", "value": "outage", "icon": "fas fa-exclamation-triangle"}
+        ]
       }
     }
   },
   "generalResponses": {
     "outage": "停電情報についてお答えいたします。<br><br>現在、お客様の地域での停電は報告されておりません。<br><br>もし電気がご使用になれない場合は、以下をご確認ください：<br>・ブレーカーが落ちていないか<br>・電気料金のお支払い状況<br><br>それでも解決しない場合は、緊急連絡先までお電話ください。<br><br>緊急時連絡先: 0120-986-777（24時間対応）",
     "default": "申し訳ございません。もう一度詳しく教えていただけますか？<br><br>以下のようなご質問にお答えできます：<br><br>・電力契約について<br>・料金プランについて<br>・ご利用料金について<br>・停電情報について<br><br>または、お電話でのご相談も承っております。<br>フリーダイヤル: 0120-986-302（平日9:00-18:00）",
-    "end": "他にご質問やご不明な点がございましたら、お気軽にお聞かせください。<br><br>詳しいご相談については、お電話でも承っております。<br><br>フリーダイヤル: 0120-986-302（平日9:00-18:00）"
-  }
+    "end": "他にご質問やご不明な点がございましたら、お気軽にお聞かせください。<br><br>詳しいご相談については、お電話でも承っております。<br><br>フリーダイヤル: 0120-986-302（平日9:00-18:00）",
+    "more_questions": "どのようなご質問でしょうか？<br><br>お選びください：",
+    "end_conversation": "ご利用ありがとうございました。<br><br>また何かございましたら、お気軽にお声がけください。<br><br>My九電アプリでも、いつでもご利用いただけます。"
+  },
+  "initialChoices": [
+    {"text": "電力契約について", "value": "contract", "icon": "fas fa-file-contract"},
+    {"text": "料金プランについて", "value": "plan", "icon": "fas fa-credit-card"},
+    {"text": "ご利用料金について", "value": "billing", "icon": "fas fa-yen-sign"},
+    {"text": "停電情報の確認", "value": "outage", "icon": "fas fa-exclamation-triangle"},
+    {"text": "その他のお問い合わせ", "value": "other", "icon": "fas fa-question-circle"}
+  ]
 }

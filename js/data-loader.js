@@ -23,7 +23,8 @@ class DataLoader {
             return data;
         } catch (error) {
             console.error(`データの読み込みに失敗しました: ${filePath}`, error);
-            throw error;
+            // エラーの場合、nullを返す（呼び出し側で処理）
+            return null;
         }
     }
 
@@ -50,22 +51,38 @@ class DataLoader {
     // 複数のデータファイルを同時に読み込む
     async loadAllData() {
         try {
-            const [chatResponses, gameData, monthlyData, notifications] = await Promise.all([
+            const [chatResponses, gameData, monthlyData, notifications] = await Promise.allSettled([
                 this.getChatResponses(),
                 this.getGameData(),
                 this.getMonthlyData(),
                 this.getNotifications()
             ]);
 
-            return {
-                chatResponses,
-                gameData,
-                monthlyData,
-                notifications
+            const result = {
+                chatResponses: chatResponses.status === 'fulfilled' ? chatResponses.value : null,
+                gameData: gameData.status === 'fulfilled' ? gameData.value : null,
+                monthlyData: monthlyData.status === 'fulfilled' ? monthlyData.value : null,
+                notifications: notifications.status === 'fulfilled' ? notifications.value : null
             };
+
+            // 成功したファイルをログ出力
+            const successfulFiles = Object.entries(result)
+                .filter(([key, value]) => value !== null)
+                .map(([key]) => key);
+            
+            if (successfulFiles.length > 0) {
+                console.log(`成功したデータ読み込み: ${successfulFiles.join(', ')}`);
+            }
+
+            return result;
         } catch (error) {
             console.error('データの一括読み込みに失敗しました:', error);
-            throw error;
+            return {
+                chatResponses: null,
+                gameData: null,
+                monthlyData: null,
+                notifications: null
+            };
         }
     }
 
@@ -93,13 +110,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         // グローバル変数として設定
         window.appData = allData;
         
-        console.log('すべてのデータの読み込みが完了しました');
+        console.log('データ読み込み処理が完了しました');
         
         // データ読み込み完了後に初期化処理を実行
         if (typeof initializeApp === 'function') {
             initializeApp();
+        } else {
+            console.warn('initializeApp関数が見つかりません');
         }
     } catch (error) {
         console.error('アプリケーションの初期化に失敗しました:', error);
+        // エラーが発生しても初期化を試行
+        if (typeof initializeApp === 'function') {
+            initializeApp();
+        }
     }
 });
