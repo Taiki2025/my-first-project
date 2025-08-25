@@ -72,7 +72,7 @@ function goToPreviousYear() {
     if (yearlyData.currentYear > yearlyData.startYear) {
         yearlyData.currentYear--;
         updateYearlyPeriodLabel();
-        updateYearlyChartData();
+        updateYearlyChartDataWithRandomValues(); // 年次変更時はランダム値を生成
     }
 }
 
@@ -81,8 +81,30 @@ function goToNextYear() {
     if (yearlyData.currentYear < yearlyData.endYear) {
         yearlyData.currentYear++;
         updateYearlyPeriodLabel();
-        updateYearlyChartData();
+        updateYearlyChartDataWithRandomValues(); // 年次変更時はランダム値を生成
     }
+}
+
+// 年次変更時のランダムデータ生成
+function updateYearlyChartDataWithRandomValues() {
+    const bars = document.querySelectorAll('.yearly-chart-container .bar');
+    const maxValue = 50; // 縦軸の最大値（kWh）を50kWhに変更
+    
+    bars.forEach(bar => {
+        const randomValue = Math.floor(Math.random() * 30) + 5; // 5-35の範囲
+        const height = (randomValue / maxValue) * 100; // 50kWhを100%として計算
+        bar.style.height = `${height}%`;
+        bar.setAttribute('data-value', randomValue);
+        
+        // データ値を表示するラベルを更新（もし存在する場合）
+        const valueLabel = bar.querySelector('.bar-value');
+        if (valueLabel) {
+            valueLabel.textContent = `${randomValue}kWh`;
+        }
+    });
+    
+    // 前年・翌年ボタンの有効/無効状態を更新
+    updateNavigationButtons();
 }
 
 // 年間期間ラベルを更新
@@ -94,16 +116,46 @@ function updateYearlyPeriodLabel() {
     }
 }
 
+// グラフの初期化とデータの整合性を確保
+function initializeChartData() {
+    const maxValue = 50; // 縦軸の最大値（kWh）を50kWhに変更
+    const bars = document.querySelectorAll('.yearly-chart-container .bar');
+    
+    bars.forEach(bar => {
+        const dataValue = parseInt(bar.getAttribute('data-value')) || 0;
+        const height = (dataValue / maxValue) * 100; // 50kWhを100%として計算
+        bar.style.height = `${height}%`;
+    });
+    
+    // 月間チャートの初期化
+    const monthlyBars = document.querySelectorAll('.monthly-data.active .bar');
+    const maxMonthlyValue = 20; // 月間チャートの最大値（kWh）
+    
+    monthlyBars.forEach(bar => {
+        const dataValue = parseFloat(bar.getAttribute('data-value')) || 0;
+        const height = (dataValue / maxMonthlyValue) * 100; // 20kWhを100%として計算
+        bar.style.height = `${height}%`;
+    });
+}
+
 // 年間チャートデータを更新
 function updateYearlyChartData() {
     // 実際のアプリケーションでは、ここでAPIからデータを取得してチャートを更新します
     // 今回はデモ用にランダムなデータを生成
     const bars = document.querySelectorAll('.yearly-chart-container .bar');
+    const maxValue = 50; // 縦軸の最大値（kWh）を50kWhに変更
+    
     bars.forEach(bar => {
-        const randomValue = Math.floor(Math.random() * 30) + 5; // 5-35の範囲
-        const height = (randomValue / 40) * 100; // 40kWhを100%として計算
+        // HTMLの固定値を尊重し、data-valueに基づいて高さを計算
+        const dataValue = parseInt(bar.getAttribute('data-value')) || 0;
+        const height = (dataValue / maxValue) * 100; // 50kWhを100%として計算
         bar.style.height = `${height}%`;
-        bar.setAttribute('data-value', randomValue);
+        
+        // データ値を表示するラベルを更新（もし存在する場合）
+        const valueLabel = bar.querySelector('.bar-value');
+        if (valueLabel) {
+            valueLabel.textContent = `${dataValue}kWh`;
+        }
     });
     
     // 前年・翌年ボタンの有効/無効状態を更新
@@ -179,6 +231,16 @@ function updateMonthlyChartData() {
         } else {
             element.classList.remove('active');
         }
+    });
+    
+    // 月間チャートの棒グラフの高さを調整
+    const monthlyBars = document.querySelectorAll('.monthly-data.active .bar');
+    const maxMonthlyValue = 20; // 月間チャートの最大値（kWh）
+    
+    monthlyBars.forEach(bar => {
+        const dataValue = parseFloat(bar.getAttribute('data-value')) || 0;
+        const height = (dataValue / maxMonthlyValue) * 100; // 20kWhを100%として計算
+        bar.style.height = `${height}%`;
     });
     
     // 前月・翌月ボタンの有効/無効状態を更新
@@ -481,13 +543,13 @@ function processSupportChat(input) {
             {"text": "プランの詳細", "value": "plan_details"}
         ]);
     } else if (inputLower.includes('停電') || inputLower.includes('電気がつかない') || inputLower.includes('電気が使えない')) {
-        addBotMessage("停電情報についてお答えいたします。<br><br>現在、お客様のご住所で停電は発生しておりません。<br><br>電気がつかない場合は、以下の点をご確認ください：<br><br>・ブレーカーが落ちていないか<br>・コンセントが抜けていないか<br>・電球が切れていないか<br><br>ご確認いただいても解決しない場合は、お電話でご連絡ください。<br><br>他にご質問はございますか？", [
+        addBotMessage("停電情報についてお答えいたします。<br><br>現在、お客様のご住所で停電は発生しておりません。<br><br>電気がつかない場合は、以下の点をご確認ください：<br><br>・ブレーカーが落ちていないか<br>・コンセントが抜けていないか<br>・電球が切れていないか<br><br>ご確認いただいても解決しない場合は、チャットボットでご相談ください。<br><br>他にご質問はございますか？", [
             {"text": "はい、他にも質問がある", "value": "more_questions"},
             {"text": "いいえ、これで終了", "value": "end"}
         ]);
     } else {
         // 一般的な応答
-        addBotMessage('申し訳ございません。もう一度詳しく教えていただけますか？<br><br>以下のようなご質問にお答えできます：<br><br>・電力契約について<br>・料金プランについて<br>・ご利用料金について<br>・停電情報について<br><br>または、お電話でのご相談も承っております。<br>フリーダイヤル: 0120-986-302（平日9:00-18:00）');
+        addBotMessage('申し訳ございません。もう一度詳しく教えていただけますか？<br><br>以下のようなご質問にお答えできます：<br><br>・電力契約について<br>・料金プランについて<br>・ご利用料金について<br>・停電情報について<br><br>チャットボットでお手伝いいたします。');
     }
 }
 
@@ -607,7 +669,7 @@ function handleInitialChoice(choice) {
             ]);
             break;
         case 'outage':
-            addBotMessage("停電情報についてお答えいたします。<br><br>現在、お客様のご住所で停電は発生しておりません。<br><br>電気がつかない場合は、以下の点をご確認ください：<br><br>・ブレーカーが落ちていないか<br>・コンセントが抜けていないか<br>・電球が切れていないか<br><br>ご確認いただいても解決しない場合は、お電話でご連絡ください。<br><br>他にご質問はございますか？", [
+            addBotMessage("停電情報についてお答えいたします。<br><br>現在、お客様のご住所で停電は発生しておりません。<br><br>電気がつかない場合は、以下の点をご確認ください：<br><br>・ブレーカーが落ちていないか<br>・コンセントが抜けていないか<br>・電球が切れていないか<br><br>ご確認いただいても解決しない場合は、チャットボットでご相談ください。<br><br>他にご質問はございますか？", [
                 {"text": "はい、他にも質問がある", "value": "more_questions"},
                 {"text": "いいえ、これで終了", "value": "end"}
             ]);
@@ -655,7 +717,7 @@ function loadMoreHistory() {
 function openNotificationDetail(notificationType) {
     switch(notificationType) {
         case 'campaign':
-            alert('新規契約キャンペーンの詳細ページに移動します。\n\n【キャンペーン内容】\n・期間：2025年8月1日～8月31日\n・対象：新規契約のお客様\n・特典：初月料金50%OFF\n・条件：2年契約\n\nお申込みはお電話またはWebから承っております。\nフリーダイヤル: 0120-986-302');
+            alert('新規契約キャンペーンの詳細ページに移動します。\n\n【キャンペーン内容】\n・期間：2025年8月1日～8月31日\n・対象：新規契約のお客様\n・特典：初月料金50%OFF\n・条件：2年契約\n\nお申込みはWebから承っております。\nチャットボットでお手続きいただけます。');
             break;
         case 'eco':
             alert('省エネチャレンジの詳細ページに移動します。\n\n【省エネチャレンジとは】\n・月間の電気使用量を前年同月比で削減\n・削減率に応じてポイントを獲得\n・参加者全員に参加賞あり\n\n【今月の目標】\n・前年同月比5%削減で50ポイント\n・10%削減で100ポイント\n・15%削減で200ポイント\n\n現在の削減率：12%（目標達成済み！）');
@@ -720,6 +782,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初期状態でナビゲーションボタンの状態を更新
     updateNavigationButtons();
     updateMonthlyNavigationButtons();
+    
+    // グラフの初期化
+    initializeChartData();
 });
 
 
