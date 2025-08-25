@@ -423,45 +423,45 @@
             timeLeft: 30
         };
 
-        // クイズデータ
-        const quizData = [
-            {
-                question: "エアコンの設定温度を1度上げると、年間で約何円の節約になりますか？",
-                options: ["約500円", "約1,000円", "約2,000円", "約3,000円"],
-                correct: 1,
-                explanation: "エアコンの設定温度を1度上げると、年間で約1,000円の電気代を節約できます。"
-            },
-            {
-                question: "LED電球は白熱電球と比べて、消費電力は約何分の1ですか？",
-                options: ["約1/3", "約1/6", "約1/10", "約1/15"],
-                correct: 1,
-                explanation: "LED電球は白熱電球と比べて、消費電力が約1/6になります。"
-            },
-            {
-                question: "冷蔵庫の設定温度を「強」から「中」に変更すると、年間で約何円の節約になりますか？",
-                options: ["約500円", "約1,000円", "約1,500円", "約2,000円"],
-                correct: 2,
-                explanation: "冷蔵庫の設定温度を「強」から「中」に変更すると、年間で約1,500円の節約になります。"
-            },
-            {
-                question: "テレビの明るさを最大から標準に変更すると、消費電力は約何%削減できますか？",
-                options: ["約10%", "約20%", "約30%", "約40%"],
-                correct: 2,
-                explanation: "テレビの明るさを最大から標準に変更すると、消費電力が約30%削減できます。"
-            },
-            {
-                question: "洗濯機で洗濯物をまとめて洗うことで、年間で約何円の節約になりますか？",
-                options: ["約1,000円", "約2,000円", "約3,000円", "約4,000円"],
-                correct: 2,
-                explanation: "洗濯物をまとめて洗うことで、年間で約3,000円の節約になります。"
+        // クイズデータ（JSONファイルから読み込み）
+        let quizData = [];
+        let gameSettings = {};
+        let resultMessages = {};
+
+        // ゲームデータを初期化する関数
+        async function initializeGameData() {
+            try {
+                const response = await fetch('data/game-data.json');
+                if (response.ok) {
+                    const gameData = await response.json();
+                    quizData = gameData.quizData || [];
+                    gameSettings = gameData.gameSettings || {};
+                    resultMessages = gameData.resultMessages || {};
+                }
+            } catch (error) {
+                console.error('ゲームデータの読み込みに失敗しました:', error);
+                // フォールバックデータ
+                quizData = [
+                    {
+                        question: "エアコンの設定温度を1度上げると、年間で約何円の節約になりますか？",
+                        options: ["約500円", "約1,000円", "約2,000円", "約3,000円"],
+                        correct: 1,
+                        explanation: "エアコンの設定温度を1度上げると、年間で約1,000円の電気代を節約できます。"
+                    }
+                ];
             }
-        ];
+        }
 
         function goBack() {
             window.history.back();
         }
 
-        function startQuiz() {
+        async function startQuiz() {
+            // ゲームデータが読み込まれていない場合は読み込む
+            if (quizData.length === 0) {
+                await initializeGameData();
+            }
+            
             gameState.currentGame = 'quiz';
             gameState.currentQuestion = 0;
             gameState.score = 0;
@@ -526,8 +526,9 @@
             const question = quizData[gameState.currentQuestion];
             const isCorrect = gameState.selectedAnswer === question.correct;
             
+            const pointsPerCorrect = gameSettings.quiz?.pointsPerCorrect || 10;
             if (isCorrect) {
-                gameState.score += 10;
+                gameState.score += pointsPerCorrect;
             }
             
             // 正解・不正解の表示
@@ -565,7 +566,8 @@
         }
 
         function startTimer() {
-            gameState.timeLeft = 30;
+            const timeLimit = gameSettings.quiz?.timeLimit || 30;
+            gameState.timeLeft = timeLimit;
             document.getElementById('quizTimer').textContent = gameState.timeLeft;
             
             gameState.timer = setInterval(() => {
@@ -585,12 +587,21 @@
             document.getElementById('quizContainer').style.display = 'none';
             document.getElementById('gameResult').style.display = 'block';
             
-            const maxScore = quizData.length * 10;
+            const pointsPerCorrect = gameSettings.quiz?.pointsPerCorrect || 10;
+            const maxScore = quizData.length * pointsPerCorrect;
             const percentage = Math.round((gameState.score / maxScore) * 100);
             
-            document.getElementById('resultTitle').textContent = 
-                percentage >= 80 ? '素晴らしい！' : 
-                percentage >= 60 ? 'よくできました！' : 'もう少し頑張りましょう！';
+            // 結果メッセージをJSONから取得
+            let resultTitle = 'もう少し頑張りましょう！';
+            if (resultMessages.excellent && percentage >= resultMessages.excellent.threshold) {
+                resultTitle = resultMessages.excellent.title;
+            } else if (resultMessages.good && percentage >= resultMessages.good.threshold) {
+                resultTitle = resultMessages.good.title;
+            } else if (resultMessages.needsImprovement) {
+                resultTitle = resultMessages.needsImprovement.title;
+            }
+            
+            document.getElementById('resultTitle').textContent = resultTitle;
             
             document.getElementById('resultScore').textContent = 
                 `正解率: ${percentage}% (${gameState.score}/${maxScore}点)`;
@@ -604,8 +615,9 @@
         function updateStats(points) {
             const totalScore = parseInt(document.getElementById('totalScore').textContent) + points;
             const gamesPlayed = parseInt(document.getElementById('gamesPlayed').textContent) + 1;
+            const pointsPerCorrect = gameSettings.quiz?.pointsPerCorrect || 10;
             const correctAnswers = parseInt(document.getElementById('correctAnswers').textContent) + 
-                Math.floor(gameState.score / 10);
+                Math.floor(gameState.score / pointsPerCorrect);
             
             document.getElementById('totalScore').textContent = totalScore;
             document.getElementById('gamesPlayed').textContent = gamesPlayed;
@@ -620,6 +632,13 @@
             document.getElementById('gameResult').style.display = 'none';
             document.getElementById('gameSelection').style.display = 'block';
         }
+    </script>
+    
+    <script>
+        // ページ読み込み時にゲームデータを初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeGameData();
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,27 @@
+{
+  "monthsData": [
+    {
+      "title": "2025年8月分",
+      "period": "7月25日～8月26日",
+      "usage": 450,
+      "cost": 12500,
+      "comparison": 12
+    },
+    {
+      "title": "2025年7月分",
+      "period": "6月24日～7月24日",
+      "usage": 520,
+      "cost": 14200,
+      "comparison": 8
+    },
+    {
+      "title": "2025年6月分",
+      "period": "5月25日～6月23日",
+      "usage": 480,
+      "cost": 13200,
+      "comparison": 15
+    }
+  ],
+  "currentYear": 2025,
+  "yearlyPeriod": "2025年8月～2026年7月"
+}
