@@ -573,3 +573,4 @@ function openNotificationDetail(notificationType) {
             alert('詳細ページに移動します');
     }
 }
+

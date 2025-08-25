@@ -738,7 +738,7 @@ body {
 .plan-item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     padding: 0.625rem;
     background: var(--white);
     border-radius: 0.25rem;
@@ -771,17 +771,29 @@ body {
 }
 
 .plan-info p {
-    font-size: 0.75rem; /* フォントサイズを小さく */
+    font-size: 0.65rem; /* フォントサイズをさらに小さく */
     color: var(--gray-600);
-    white-space: nowrap; /* テキストを折り返さない */
+    white-space: nowrap; /* テキストを1行に固定 */
     overflow: hidden; /* はみ出したテキストを隠す */
     text-overflow: ellipsis; /* はみ出したテキストを...で表示 */
+    line-height: 1.2; /* 行間を調整 */
+    margin-bottom: 0.5rem; /* 下の余白を追加 */
 }
 
 .plan-item .btn {
     width: auto;
     padding: 0.375rem 0.75rem;
     font-size: 0.875rem;
+    height: 2rem;
+    min-height: 2rem;
+    align-self: flex-start;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    white-space: nowrap;
 }
 
 .lifestyle-chat-action {
@@ -1045,6 +1057,8 @@ body {
         opacity: 1;
     }
 }
+
+
 
 /* Qピコカード */
 .qpico-card {
@@ -1987,6 +2001,8 @@ body {
         max-width: 414px;
         width: 414px;
     }
+    
+
 
     .app-content {
         max-width: 414px;
