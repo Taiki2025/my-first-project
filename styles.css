@@ -894,6 +894,8 @@ body {
 .user-message {
     align-self: flex-end;
     flex-direction: row-reverse;
+    display: flex;
+    align-items: flex-end;
 }
 
 .message-avatar {
@@ -934,6 +936,9 @@ body {
     color: var(--white);
     border-color: var(--primary-blue);
     border-bottom-right-radius: 0.25rem;
+    white-space: nowrap;
+    display: inline-block;
+    min-width: fit-content;
 }
 
 .recommendation-reason, .plan-details {

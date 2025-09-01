@@ -844,15 +844,66 @@ function processLifestyleChat(input) {
     switch(currentStep) {
         case 0: // 家族人数
             lifestyleChatState.lifestyleAnswers.familySize = input;
+            
+            // 1人の場合は3歳未満のお子さまの質問をスキップしてオール電化の質問へ
+            if (input === '1') {
+                lifestyleChatState.lifestyleAnswers.hasYoungChild = 'いいえ';
+                lifestyleChatState.step = 3;
+                addBotMessage("ありがとうございます。お住まいはオール電化住宅ですか？", [
+                    {"text": "はい", "value": "はい"},
+                    {"text": "いいえ", "value": "いいえ"}
+                ]);
+                return;
+            }
+            
+            // 2人以上の場合は次の質問へ
             lifestyleChatState.step = 1;
-            addBotMessage("ありがとうございます。お住まいはオール電化住宅ですか？", [
+            addBotMessage("ありがとうございます。3歳未満のお子さまはいらっしゃいますか？", [
                 {"text": "はい", "value": "はい"},
                 {"text": "いいえ", "value": "いいえ"}
             ]);
             return;
-        case 1: // オール電化
+            
+                 case 1: // 3歳未満のお子さまの有無
+             lifestyleChatState.lifestyleAnswers.hasYoungChild = input;
+             
+             if (input === 'はい') {
+                 // すくすく赤ちゃんプランを提案
+                 addBotMessage("診断ありがとうございます！<br><br>お客様のライフスタイルから、最適なプランとして「<b>すくすく赤ちゃんプラン</b>」をご提案します。<br><br><div class='recommendation-reason'><b>【ご提案理由】</b><br>3歳未満のお子さまがいるご家庭のため</div><div class='plan-details'><b>【プランの特徴】</b><br>毎年5月分の電気料金を10%割引いたします。子育て世帯を応援するプランです。</div><br>こちらのプランで申込み手続きを進めますか？", [
+                     {"text": "はい", "value": "sukusuku_yes"},
+                     {"text": "いいえ", "value": "sukusuku_no"}
+                 ]);
+                 lifestyleChatState.step = 2;
+             } else {
+                 // オール電化の質問へ遷移
+                 lifestyleChatState.step = 3;
+                 addBotMessage("ありがとうございます。お住まいはオール電化住宅ですか？", [
+                     {"text": "はい", "value": "はい"},
+                     {"text": "いいえ", "value": "いいえ"}
+                 ]);
+             }
+             return;
+            
+                 case 2: // すくすく赤ちゃんプラン選択確認
+             if (input === 'sukusuku_yes') {
+                 addBotMessage("「すくすく赤ちゃんプラン」を選択していただき、ありがとうございます。<br><br>こちらのプランで申込み手続きを進めますか？", [
+                     {"text": "はい、申込み手続きを進める", "value": "はい"},
+                     {"text": "いいえ、他のプランも見たい", "value": "いいえ"}
+                 ]);
+                 lifestyleChatState.step = 4;
+             } else {
+                 // オール電化の質問へ遷移
+                 lifestyleChatState.step = 3;
+                 addBotMessage("ありがとうございます。お住まいはオール電化住宅ですか？", [
+                     {"text": "はい", "value": "はい"},
+                     {"text": "いいえ", "value": "いいえ"}
+                 ]);
+             }
+             return;
+            
+        case 3: // オール電化
             lifestyleChatState.lifestyleAnswers.allElectric = input.toLowerCase();
-            lifestyleChatState.step = 2;
+            lifestyleChatState.step = 5;
             addBotMessage("ありがとうございます。電気の使用時間帯についてお聞かせください。どの時間帯に電気を多く使いますか？", [
                 {"text": "夜間が多い", "value": "夜間"},
                 {"text": "昼間が多い", "value": "昼間"},
@@ -860,7 +911,24 @@ function processLifestyleChat(input) {
                 {"text": "ほぼ均等", "value": "均等"}
             ]);
             return;
-        case 2: // 使用時間帯
+            
+        case 4: // すくすく赤ちゃんプラン申込み確認
+            if (input.toLowerCase().includes('はい') || input.toLowerCase().includes('yes') || input === 'はい') {
+                addBotMessage("承知いたしました。申込み手続きを開始いたします。<br><br>お客様のお名前を教えてください。");
+                // 申込みチャットに切り替え
+                supportChatState.currentTopic = 'application';
+                supportChatState.step = 0;
+                supportChatState.selectedPlan = 'すくすく赤ちゃんプラン';
+            } else {
+                addBotMessage("承知いたしました。他にご質問がございましたら、お気軽にお聞きください。", [
+                    {"text": "はい、他にも質問がある", "value": "more_questions"},
+                    {"text": "いいえ、これで終了", "value": "end"}
+                ]);
+                lifestyleChatState.step = -1;
+            }
+            return;
+            
+        case 5: // 使用時間帯
             lifestyleChatState.lifestyleAnswers.usageTime = input.toLowerCase();
             
             // プラン推奨
@@ -872,24 +940,79 @@ function processLifestyleChat(input) {
                 {"text": "はい、申込み手続きを進める", "value": "はい"},
                 {"text": "いいえ、他のプランも見たい", "value": "いいえ"}
             ]);
-            lifestyleChatState.step = 3;
+            lifestyleChatState.step = 6;
             return;
-        case 3: // 申込み確認
-            if (input.toLowerCase().includes('はい') || input.toLowerCase().includes('yes') || input === 'はい') {
-                addBotMessage("承知いたしました。申込み手続きを開始いたします。<br><br>お客様のお名前を教えてください。");
-                // 申込みチャットに切り替え
-                supportChatState.currentTopic = 'application';
-                supportChatState.step = 0;
-                supportChatState.selectedPlan = recommendPlan(lifestyleChatState.lifestyleAnswers).name;
-            } else {
-                addBotMessage("承知いたしました。他にご質問がございましたら、お気軽にお聞きください。", [
-                    {"text": "はい、他にも質問がある", "value": "more_questions"},
-                    {"text": "いいえ、これで終了", "value": "end"}
-                ]);
-                lifestyleChatState.step = -1;
-            }
-            return;
-    }
+            
+                 case 6: // 申込み確認
+             if (input.toLowerCase().includes('はい') || input.toLowerCase().includes('yes') || input === 'はい') {
+                 addBotMessage("承知いたしました。申込み手続きを開始いたします。<br><br>お客様のお名前を教えてください。");
+                 // 申込みチャットに切り替え
+                 supportChatState.currentTopic = 'application';
+                 supportChatState.step = 0;
+                 supportChatState.selectedPlan = recommendPlan(lifestyleChatState.lifestyleAnswers).name;
+             } else {
+                 addBotMessage("承知いたしました。他にご質問がございましたら、お気軽にお聞きください。", [
+                     {"text": "はい、他にも質問がある", "value": "more_questions"},
+                     {"text": "いいえ、これで終了", "value": "end"}
+                 ]);
+                 lifestyleChatState.step = -1;
+             }
+             return;
+             
+                   case 7: // 通常プラン選択後の申込み確認
+              if (input.toLowerCase().includes('はい') || input.toLowerCase().includes('yes') || input === 'はい') {
+                  addBotMessage("承知いたしました。申込み手続きを開始いたします。<br><br>お客様のお名前を教えてください。");
+                  // 申込みチャットに切り替え
+                  supportChatState.currentTopic = 'application';
+                  supportChatState.step = 0;
+                  // 保存されたプラン名を使用
+                  supportChatState.selectedPlan = lifestyleChatState.selectedPlan || '従量電灯B';
+              } else {
+                  addBotMessage("承知いたしました。他にご質問がございましたら、お気軽にお聞きください。", [
+                      {"text": "はい、他にも質問がある", "value": "more_questions"},
+                      {"text": "いいえ、これで終了", "value": "end"}
+                  ]);
+                  lifestyleChatState.step = -1;
+              }
+              return;
+              
+          case 8: // 通常プランを見る選択肢の処理
+              if (input === 'normal_plans') {
+                  addBotMessage("通常の料金プランをご紹介いたします。", [
+                      {"text": "スマートファミリープラン", "value": "select_plan"},
+                      {"text": "電化でナイト・セレクト", "value": "select_plan"},
+                      {"text": "従量電灯B", "value": "select_plan"}
+                  ]);
+                  lifestyleChatState.step = 9;
+                  return;
+              }
+              
+              if (input === 'end') {
+                  addBotMessage("診断を終了いたします。ご利用ありがとうございました。", [
+                      {"text": "はい、他にも質問がある", "value": "more_questions"},
+                      {"text": "いいえ、これで終了", "value": "end"}
+                  ]);
+                  lifestyleChatState.step = -1;
+                  return;
+              }
+              return;
+              
+          case 9: // プラン選択の処理
+              if (input === 'select_plan') {
+                  // 選択されたプラン名を取得するため、グローバル変数に保存
+                  const selectedBtn = event.target.closest('.choice-btn');
+                  const planName = selectedBtn ? selectedBtn.textContent.trim() : '従量電灯B';
+                  lifestyleChatState.selectedPlan = planName;
+                  
+                  addBotMessage(`「${planName}」を選択していただき、ありがとうございます。<br><br>こちらのプランで申込み手続きを進めますか？`, [
+                      {"text": "はい、申込み手続きを進める", "value": "はい"},
+                      {"text": "いいえ、他のプランも見たい", "value": "いいえ"}
+                  ]);
+                  lifestyleChatState.step = 7; // 申込み確認ステップ
+                  return;
+              }
+              return;
+     }
 }
 
 // プラン推奨ロジック
@@ -897,6 +1020,16 @@ function recommendPlan(answers) {
     const familySize = parseInt(answers.familySize) || 1;
     const isAllElectric = answers.allElectric && answers.allElectric.includes('はい');
     const isNightUsage = answers.usageTime && answers.usageTime.includes('夜間');
+    const hasYoungChild = answers.hasYoungChild === 'はい';
+    
+    // 3歳未満のお子さまがいる場合はすくすく赤ちゃんプランを優先
+    if (hasYoungChild) {
+        return {
+            name: 'すくすく赤ちゃんプラン',
+            reason: '3歳未満のお子さまがいるご家庭のため',
+            description: '毎年5月分の電気料金を10%割引いたします。子育て世帯を応援するプランです。'
+        };
+    }
     
     if (isAllElectric && isNightUsage) {
         return {
@@ -971,6 +1104,9 @@ function getPlanInfo(planName) {
         },
         '従量電灯B': {
             description: '1年契約で使用量が少ないご家庭のお客さま向けプランです。基本料金が安く、使用量に応じた従量料金が適用されます。'
+        },
+        'すくすく赤ちゃんプラン': {
+            description: '3歳未満のお子さまがいるご家庭向けの特別プランです。毎年5月分の電気料金を10%割引いたします。子育て世帯を応援するプランです。'
         }
     };
     
