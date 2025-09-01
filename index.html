@@ -80,6 +80,29 @@
                 </div>
             </div>
 
+            <!-- 未払い通知カード -->
+            <div class="card unpaid-notification-card">
+                <div class="notification-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>未払いのお知らせ</span>
+                </div>
+                <div class="notification-content">
+                    <p>2025年7月分の電気料金が未払いとなっております。</p>
+                    <p class="unpaid-amount">未払い金額: <strong>9,707円</strong></p>
+                    <p class="payment-deadline">支払期限: 2025年8月26日(火)</p>
+                </div>
+                <div class="notification-actions">
+                    <button class="btn btn-primary" onclick="openConveniencePayment()">
+                        <i class="fas fa-store"></i>
+                        コンビニで支払う
+                    </button>
+                    <button class="btn btn-outline" onclick="showPaymentHistory()">
+                        <i class="fas fa-history"></i>
+                        支払履歴を確認
+                    </button>
+                </div>
+            </div>
+
             <!-- 予想電気料金カード -->
             <div class="card estimate-card">
                 <div class="card-header">
@@ -681,6 +704,99 @@
         </div>
 
 
+
+        <!-- コンビニ支払いモーダル -->
+        <div id="conveniencePaymentModal" class="convenience-payment-modal">
+            <div class="convenience-payment-container">
+                <div class="convenience-payment-header">
+                    <div class="convenience-payment-title">
+                        <i class="fas fa-store"></i>
+                        コンビニ支払い
+                    </div>
+                    <button class="close-btn" onclick="closeConveniencePayment()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="convenience-payment-content">
+                    <div class="payment-info">
+                        <h3>支払い情報</h3>
+                        <div class="payment-details">
+                            <div class="payment-item">
+                                <span class="label">支払い金額:</span>
+                                <span class="value">9,707円</span>
+                            </div>
+                            <div class="payment-item">
+                                <span class="label">支払期限:</span>
+                                <span class="value">2025年8月26日(火)</span>
+                            </div>
+                            <div class="payment-item">
+                                <span class="label">お客様番号:</span>
+                                <span class="value">12-3456-7890-1234-5678-90</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="convenience-selection">
+                        <h3>コンビニを選択してください</h3>
+                        <div class="convenience-list">
+                            <div class="convenience-item" onclick="selectConvenience('seven')">
+                                <img src="コンビニロゴ/conveni_nav_btn_seveneleven01.gif" alt="セブンイレブン" class="convenience-logo">
+                                <span class="convenience-name">セブンイレブン</span>
+                            </div>
+                            <div class="convenience-item" onclick="selectConvenience('lawson')">
+                                <img src="コンビニロゴ/conveni_nav_btn_lowson01.gif" alt="ローソン" class="convenience-logo">
+                                <span class="convenience-name">ローソン</span>
+                            </div>
+                            <div class="convenience-item" onclick="selectConvenience('familymart')">
+                                <img src="コンビニロゴ/conveni_nav_btn_familymart01.gif" alt="ファミリーマート" class="convenience-logo">
+                                <span class="convenience-name">ファミリーマート</span>
+                            </div>
+                            <div class="convenience-item" onclick="selectConvenience('ministop')">
+                                <img src="コンビニロゴ/conveni_nav_btn_ministop01.gif" alt="ミニストップ" class="convenience-logo">
+                                <span class="convenience-name">ミニストップ</span>
+                            </div>
+                            <div class="convenience-item" onclick="selectConvenience('yamazaki')">
+                                <img src="コンビニロゴ/conveni_nav_btn_yamazaki01.gif" alt="ヤマザキデイリーストア" class="convenience-logo">
+                                <span class="convenience-name">ヤマザキデイリーストア</span>
+                            </div>
+                            <div class="convenience-item" onclick="selectConvenience('seicomart')">
+                                <img src="コンビニロゴ/conveni_nav_btn_seicomart01.gif" alt="セイコーマート" class="convenience-logo">
+                                <span class="convenience-name">セイコーマート</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="barcodeSection" class="barcode-section" style="display: none;">
+                        <h3>バーコード</h3>
+                        <div class="barcode-container">
+                            <div class="barcode-image">
+                                <div class="barcode-placeholder" id="barcode-placeholder">
+                                    <i class="fas fa-barcode"></i>
+                                    <p>バーコード画像</p>
+                                    <small>実際のAPI連携では、ここにGMO Payment Gateway等から取得したバーコードが表示されます</small>
+                                </div>
+                                <div class="payment-slip" id="payment-slip" style="display: none;">
+                                    <!-- 振込票コンテンツがここに動的に生成されます -->
+                                </div>
+                            </div>
+                            <div class="barcode-info">
+                                <p><strong>支払い番号:</strong> 1234567890123456</p>
+                                <p><strong>有効期限:</strong> 2025年8月26日(火) 23:59</p>
+                            </div>
+                        </div>
+                        <div class="barcode-instructions">
+                            <h4>支払い方法</h4>
+                            <ol>
+                                <li>上記のバーコードをコンビニのレジで提示してください</li>
+                                <li>店員がバーコードを読み取ります</li>
+                                <li>支払い金額を確認して現金でお支払いください</li>
+                                <li>支払い完了後、領収書をお受け取りください</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- チャットボットモーダル -->
         <div id="chatModal" class="chat-modal">

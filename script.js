@@ -32,6 +32,12 @@ let monthlyData = {
     endMonth: 12
 };
 
+// コンビニ支払いの状態管理
+let conveniencePaymentState = {
+    isOpen: false,
+    selectedConvenience: null
+};
+
 // データを初期化する関数
 function initializeChatData() {
     if (window.appData && window.appData.chatResponses) {
@@ -1261,5 +1267,343 @@ document.addEventListener('DOMContentLoaded', function() {
     // グラフの初期化
     initializeChartData();
 });
+
+// コンビニ支払い関連の関数
+
+// コンビニ支払いモーダルを開く
+function openConveniencePayment() {
+    console.log('openConveniencePayment called');
+    const modal = document.getElementById('conveniencePaymentModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        conveniencePaymentState.isOpen = true;
+        console.log('Modal opened successfully');
+    } else {
+        console.error('Modal element not found');
+    }
+}
+
+// コンビニ支払いモーダルを閉じる
+function closeConveniencePayment() {
+    const modal = document.getElementById('conveniencePaymentModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        conveniencePaymentState.isOpen = false;
+        conveniencePaymentState.selectedConvenience = null;
+        
+        // 選択状態をリセット
+        const convenienceItems = document.querySelectorAll('.convenience-item');
+        convenienceItems.forEach(item => {
+            item.classList.remove('selected');
+        });
+        
+        // バーコードセクションを非表示
+        const barcodeSection = document.getElementById('barcodeSection');
+        if (barcodeSection) {
+            barcodeSection.style.display = 'none';
+        }
+    }
+}
+
+// コンビニを選択
+function selectConvenience(convenienceType) {
+    console.log('selectConvenience called with:', convenienceType);
+    
+    // 選択状態を更新
+    const convenienceItems = document.querySelectorAll('.convenience-item');
+    convenienceItems.forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // 選択されたコンビニをハイライト
+    const selectedItem = event.currentTarget;
+    selectedItem.classList.add('selected');
+    
+    conveniencePaymentState.selectedConvenience = convenienceType;
+    
+    // バーコードセクションを表示
+    const barcodeSection = document.getElementById('barcodeSection');
+    if (barcodeSection) {
+        barcodeSection.style.display = 'block';
+        console.log('Barcode section displayed');
+        
+        // セクションタイトルを更新
+        const sectionTitle = barcodeSection.querySelector('h3');
+        if (sectionTitle) {
+            const hasPaymentSlip = ['seven', 'familymart', 'lawson', 'ministop', 'yamazaki', 'seicomart'].includes(convenienceType);
+            sectionTitle.textContent = hasPaymentSlip ? '振込票' : 'バーコード';
+        }
+        
+        // バーコードセクションまでスクロール
+        setTimeout(() => {
+            barcodeSection.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }, 100);
+    } else {
+        console.error('Barcode section not found');
+    }
+    
+    // ダミーAPI呼び出しのシミュレーション
+    simulateApiCall(convenienceType);
+}
+
+// ダミーAPI呼び出しのシミュレーション
+function simulateApiCall(convenienceType) {
+    const barcodePlaceholder = document.getElementById('barcode-placeholder');
+    const paymentSlip = document.getElementById('payment-slip');
+    const paymentSlipImage = document.getElementById('payment-slip-image');
+    
+    // 初期状態で両方を非表示にする
+    if (barcodePlaceholder) barcodePlaceholder.style.display = 'none';
+    if (paymentSlip) paymentSlip.style.display = 'none';
+    
+    // ローディング表示を開始
+    if (barcodePlaceholder) {
+        barcodePlaceholder.style.display = 'flex';
+        barcodePlaceholder.innerHTML = `
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>振込票生成中...</p>
+            <small>API連携処理を実行中です</small>
+        `;
+    }
+    
+    // 振込票を表示するコンビニかチェック
+    const hasPaymentSlip = ['seven', 'familymart', 'lawson', 'ministop', 'yamazaki', 'seicomart'].includes(convenienceType);
+    
+    // 2秒後に振込票またはバーコードを表示（実際のAPI呼び出しをシミュレート）
+    setTimeout(() => {
+        // ローディング表示を停止
+        if (barcodePlaceholder) barcodePlaceholder.style.display = 'none';
+        
+        if (hasPaymentSlip) {
+            // 振込票を表示
+            if (paymentSlip) {
+                const slipContent = generatePaymentSlipContent(convenienceType);
+                paymentSlip.innerHTML = slipContent;
+                paymentSlip.style.display = 'flex';
+            }
+        } else {
+            // バーコードを表示
+            if (barcodePlaceholder) {
+                barcodePlaceholder.style.display = 'flex';
+                barcodePlaceholder.innerHTML = `
+                    <i class="fas fa-barcode"></i>
+                    <p>バーコード生成完了</p>
+                    <small>${getConvenienceName(convenienceType)}用のバーコードが生成されました</small>
+                `;
+            }
+        }
+        
+        // 支払い番号を更新
+        const paymentNumber = generatePaymentNumber();
+        const barcodeInfo = document.querySelector('.barcode-info');
+        if (barcodeInfo) {
+            barcodeInfo.innerHTML = `
+                <p><strong>支払い番号:</strong> ${paymentNumber}</p>
+                <p><strong>有効期限:</strong> 2025年8月26日(火) 23:59</p>
+            `;
+        }
+    }, 2000);
+}
+
+// 振込票コンテンツを生成
+function generatePaymentSlipContent(convenienceType) {
+    const paymentNumber = generatePaymentNumber();
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月${currentDate.getDate()}日`;
+    
+    switch(convenienceType) {
+        case 'seven':
+            return `
+                <div class="payment-slip-content seven-eleven">
+                    <div class="slip-header">
+                        <h3>セブンイレブン 振込票</h3>
+                        <div class="slip-date">${formattedDate}</div>
+                    </div>
+                    <div class="slip-body">
+                        <div class="slip-row">
+                            <span class="label">お客様番号:</span>
+                            <span class="value">12-3456-7890-1234-5678-90</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払い金額:</span>
+                            <span class="value">9,707円</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払期限:</span>
+                            <span class="value">2025年8月26日(火)</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">受付番号:</span>
+                            <span class="value">${paymentNumber}</span>
+                        </div>
+                    </div>
+                    <div class="slip-footer">
+                        <p>※この番号をレジでお申し出ください</p>
+                    </div>
+                </div>
+            `;
+            
+        case 'familymart':
+            return `
+                <div class="payment-slip-content familymart">
+                    <div class="slip-header">
+                        <h3>ファミリーマート 振込票</h3>
+                        <div class="slip-date">${formattedDate}</div>
+                    </div>
+                    <div class="slip-body">
+                        <div class="slip-row">
+                            <span class="label">お客様番号:</span>
+                            <span class="value">12-3456-7890-1234-5678-90</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払い金額:</span>
+                            <span class="value">9,707円</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払期限:</span>
+                            <span class="value">2025年8月26日(火)</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">受付番号:</span>
+                            <span class="value">${paymentNumber}</span>
+                        </div>
+                    </div>
+                    <div class="slip-footer">
+                        <p>※この番号をレジでお申し出ください</p>
+                    </div>
+                </div>
+            `;
+            
+        case 'lawson':
+        case 'ministop':
+            return `
+                <div class="payment-slip-content lawson-ministop">
+                    <div class="slip-header">
+                        <h3>${getConvenienceName(convenienceType)} 振込票</h3>
+                        <div class="slip-date">${formattedDate}</div>
+                    </div>
+                    <div class="slip-body">
+                        <div class="slip-row">
+                            <span class="label">お客様番号:</span>
+                            <span class="value">12-3456-7890-1234-5678-90</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払い金額:</span>
+                            <span class="value">9,707円</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払期限:</span>
+                            <span class="value">2025年8月26日(火)</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">受付番号:</span>
+                            <span class="value">${paymentNumber}</span>
+                        </div>
+                    </div>
+                    <div class="slip-footer">
+                        <p>※この番号をレジでお申し出ください</p>
+                    </div>
+                </div>
+            `;
+            
+        case 'seicomart':
+            return `
+                <div class="payment-slip-content seicomart">
+                    <div class="slip-header">
+                        <h3>セイコーマート 振込票</h3>
+                        <div class="slip-date">${formattedDate}</div>
+                    </div>
+                    <div class="slip-body">
+                        <div class="slip-row">
+                            <span class="label">お客様番号:</span>
+                            <span class="value">12-3456-7890-1234-5678-90</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払い金額:</span>
+                            <span class="value">9,707円</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払期限:</span>
+                            <span class="value">2025年8月26日(火)</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">受付番号:</span>
+                            <span class="value">${paymentNumber}</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">オンライン決済番号:</span>
+                            <span class="value">OL${paymentNumber.slice(-8)}</span>
+                        </div>
+                    </div>
+                    <div class="slip-footer">
+                        <p>※この番号をレジでお申し出ください</p>
+                    </div>
+                </div>
+            `;
+            
+        case 'yamazaki':
+            return `
+                <div class="payment-slip-content yamazaki">
+                    <div class="slip-header">
+                        <h3>ヤマザキデイリーストア 振込票</h3>
+                        <div class="slip-date">${formattedDate}</div>
+                    </div>
+                    <div class="slip-body">
+                        <div class="slip-row">
+                            <span class="label">お客様番号:</span>
+                            <span class="value">12-3456-7890-1234-5678-90</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払い金額:</span>
+                            <span class="value">9,707円</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">支払期限:</span>
+                            <span class="value">2025年8月26日(火)</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="label">オンライン決済番号:</span>
+                            <span class="value">OL${paymentNumber.slice(-8)}</span>
+                        </div>
+                    </div>
+                    <div class="slip-footer">
+                        <p>※この番号をレジでお申し出ください</p>
+                    </div>
+                </div>
+            `;
+            
+        default:
+            return '';
+    }
+}
+
+// コンビニ名を取得
+function getConvenienceName(type) {
+    const names = {
+        'seven': 'セブンイレブン',
+        'lawson': 'ローソン',
+        'familymart': 'ファミリーマート',
+        'ministop': 'ミニストップ',
+        'yamazaki': 'ヤマザキデイリーストア',
+        'seicomart': 'セイコーマート'
+    };
+    return names[type] || 'コンビニ';
+}
+
+// 支払い番号を生成
+function generatePaymentNumber() {
+    // 16桁のランダムな数字を生成
+    return Math.random().toString().slice(2, 18);
+}
+
+// 支払履歴を表示
+function showPaymentHistory() {
+    alert('支払履歴ページに移動します。\n\n【最近の支払履歴】\n・2025年6月分: 8,441円 (支払済み)\n・2025年5月分: 7,892円 (支払済み)\n・2025年4月分: 9,123円 (支払済み)\n・2025年3月分: 8,567円 (支払済み)\n\n【支払方法】\n・口座振替: 6月、5月\n・コンビニ支払い: 4月、3月\n\n2025年7月分は未払いとなっております。\nコンビニ支払いでお支払いください。');
+}
 
 

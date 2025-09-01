@@ -2484,6 +2484,480 @@ body {
     flex-shrink: 0;
 }
 
-.notification-arrow i {
-    font-size: 0.9rem;
+ .notification-arrow i {
+     font-size: 0.9rem;
+ }
+
+ /* 未払い通知カード */
+ .unpaid-notification-card {
+     background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+     border: 2px solid #ffc107;
+     margin-bottom: 1rem;
+ }
+
+ .notification-header {
+     display: flex;
+     align-items: center;
+     gap: 0.5rem;
+     margin-bottom: 1rem;
+     color: #856404;
+     font-weight: 600;
+     font-size: 1rem;
+ }
+
+ .notification-header i {
+     color: #ffc107;
+     font-size: 1.25rem;
+ }
+
+ .notification-content {
+     margin-bottom: 1rem;
+ }
+
+ .notification-content p {
+     margin-bottom: 0.5rem;
+     color: #856404;
+     font-size: 0.875rem;
+     line-height: 1.4;
+ }
+
+ .unpaid-amount {
+     font-size: 1rem !important;
+     font-weight: 600;
+ }
+
+ .payment-deadline {
+     color: #dc3545 !important;
+     font-weight: 500;
+ }
+
+ .notification-actions {
+     display: flex;
+     flex-direction: column;
+     gap: 0.5rem;
+ }
+
+ /* コンビニ支払いモーダル */
+ .convenience-payment-modal {
+     display: none;
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: var(--white);
+     z-index: 1000;
+     overflow: hidden;
+ }
+
+ .convenience-payment-container {
+     position: relative;
+     width: 100%;
+     height: 100%;
+     display: flex;
+     flex-direction: column;
+     background: var(--white);
+     max-width: 414px;
+     margin: 0 auto;
+ }
+
+ .convenience-payment-header {
+     background: var(--primary-blue);
+     color: var(--white);
+     padding: 1rem;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     box-shadow: var(--shadow-sm);
+     position: sticky;
+     top: 0;
+     z-index: 10;
+ }
+
+ .convenience-payment-title {
+     display: flex;
+     align-items: center;
+     gap: 0.5rem;
+     font-weight: 600;
+     font-size: 1rem;
+ }
+
+ .convenience-payment-title i {
+     font-size: 1.25rem;
+ }
+
+ .convenience-payment-content {
+     flex: 1;
+     padding: 1rem;
+     overflow-y: auto;
+     background: var(--light-blue);
+     display: flex;
+     flex-direction: column;
+     gap: 1.5rem;
+ }
+
+ /* 支払い情報 */
+ .payment-info {
+     background: var(--white);
+     border-radius: 0.75rem;
+     padding: 1.25rem;
+     border: 1px solid var(--gray-200);
+     box-shadow: var(--shadow-sm);
+ }
+
+ .payment-info h3 {
+     font-size: 1.125rem;
+     font-weight: 600;
+     color: var(--gray-800);
+     margin-bottom: 1rem;
+ }
+
+ .payment-details {
+     display: flex;
+     flex-direction: column;
+     gap: 0.75rem;
+ }
+
+ .payment-item {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 0.5rem 0;
+     border-bottom: 1px solid var(--gray-100);
+ }
+
+ .payment-item:last-child {
+     border-bottom: none;
+ }
+
+ .payment-item .label {
+     font-size: 0.875rem;
+     color: var(--gray-600);
+     font-weight: 500;
+ }
+
+ .payment-item .value {
+     font-size: 0.875rem;
+     color: var(--gray-800);
+     font-weight: 600;
+ }
+
+ /* コンビニ選択 */
+ .convenience-selection {
+     background: var(--white);
+     border-radius: 0.75rem;
+     padding: 1.25rem;
+     border: 1px solid var(--gray-200);
+     box-shadow: var(--shadow-sm);
+ }
+
+ .convenience-selection h3 {
+     font-size: 1.125rem;
+     font-weight: 600;
+     color: var(--gray-800);
+     margin-bottom: 1rem;
+     text-align: center;
+ }
+
+ .convenience-list {
+     display: flex;
+     flex-direction: column;
+     gap: 0.75rem;
+ }
+
+ .convenience-item {
+     background: var(--white);
+     border: 1px solid var(--gray-200);
+     border-radius: 0.5rem;
+     padding: 1rem;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     display: flex;
+     align-items: center;
+     gap: 1rem;
+ }
+
+ .convenience-item:hover {
+     border-color: var(--primary-blue);
+     background: var(--light-blue);
+     transform: translateX(2px);
+     box-shadow: var(--shadow-sm);
+ }
+
+ .convenience-item.selected {
+     border-color: var(--primary-blue);
+     background: var(--light-blue);
+     box-shadow: var(--shadow-sm);
+ }
+
+ .convenience-logo {
+    width: 90px;
+    height: 60px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
+
+ .convenience-name {
+     font-size: 1rem;
+     font-weight: 500;
+     color: var(--gray-700);
+ }
+
+ /* バーコードセクション */
+ .barcode-section {
+     background: var(--white);
+     border-radius: 0.75rem;
+     padding: 1.25rem;
+     border: 1px solid var(--gray-200);
+     box-shadow: var(--shadow-sm);
+ }
+
+ .barcode-section h3 {
+     font-size: 1.125rem;
+     font-weight: 600;
+     color: var(--gray-800);
+     margin-bottom: 1rem;
+     text-align: center;
+ }
+
+ .barcode-container {
+     display: flex;
+     flex-direction: column;
+     gap: 1rem;
+     margin-bottom: 1.5rem;
+ }
+
+ .barcode-image {
+     display: flex;
+     justify-content: center;
+     margin-bottom: 1rem;
+ }
+
+ .barcode-placeholder {
+     background: var(--gray-50);
+     border: 2px dashed var(--gray-300);
+     border-radius: 0.5rem;
+     padding: 2rem;
+     text-align: center;
+     min-width: 200px;
+     min-height: 120px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     gap: 0.5rem;
+ }
+
+ .barcode-placeholder i {
+     font-size: 3rem;
+     color: var(--gray-400);
+ }
+
+ .barcode-placeholder p {
+     font-size: 1rem;
+     font-weight: 500;
+     color: var(--gray-600);
+     margin: 0;
+ }
+
+ .barcode-placeholder small {
+     font-size: 0.75rem;
+     color: var(--gray-500);
+     text-align: center;
+     line-height: 1.3;
+ }
+
+ .barcode-info {
+     background: var(--gray-50);
+     border-radius: 0.5rem;
+     padding: 1rem;
+ }
+
+ .barcode-info p {
+     margin-bottom: 0.5rem;
+     font-size: 0.875rem;
+     color: var(--gray-700);
+ }
+
+ .barcode-info p:last-child {
+     margin-bottom: 0;
+ }
+
+ .barcode-instructions {
+     background: var(--light-blue);
+     border-radius: 0.5rem;
+     padding: 1rem;
+ }
+
+ .barcode-instructions h4 {
+     font-size: 1rem;
+     font-weight: 600;
+     color: var(--gray-800);
+     margin-bottom: 0.75rem;
+ }
+
+ .barcode-instructions ol {
+     margin: 0;
+     padding-left: 1.25rem;
+ }
+
+ .barcode-instructions li {
+     font-size: 0.875rem;
+     color: var(--gray-700);
+     margin-bottom: 0.5rem;
+     line-height: 1.4;
+ }
+
+ .barcode-instructions li:last-child {
+     margin-bottom: 0;
+ }
+
+ /* 振込票のスタイル */
+ .payment-slip {
+     display: none;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     padding: 1rem;
+     background: var(--white);
+     border-radius: 0.75rem;
+     border: 1px solid var(--gray-200);
+     box-shadow: var(--shadow-sm);
+     width: 100%;
+     max-width: 400px;
+ }
+
+ /* 振込票コンテンツのスタイル */
+ .payment-slip-content {
+     width: 100%;
+     background: var(--white);
+     border: 2px solid var(--gray-300);
+     border-radius: 0.5rem;
+     padding: 1.5rem;
+     font-family: 'Courier New', monospace;
+     font-size: 0.875rem;
+     line-height: 1.6;
+ }
+
+ .slip-header {
+     text-align: center;
+     border-bottom: 2px solid var(--gray-400);
+     padding-bottom: 1rem;
+     margin-bottom: 1rem;
+ }
+
+ .slip-header h3 {
+     font-size: 1.125rem;
+     font-weight: bold;
+     margin: 0 0 0.5rem 0;
+     color: var(--gray-800);
+ }
+
+ .slip-date {
+     font-size: 0.875rem;
+     color: var(--gray-600);
+ }
+
+ .slip-body {
+     margin-bottom: 1rem;
+ }
+
+ .slip-row {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 0.5rem 0;
+     border-bottom: 1px solid var(--gray-200);
+ }
+
+ .slip-row:last-child {
+     border-bottom: none;
+ }
+
+ .slip-row .label {
+     font-weight: bold;
+     color: var(--gray-700);
+     min-width: 120px;
+ }
+
+ .slip-row .value {
+     font-weight: bold;
+     color: var(--gray-900);
+     text-align: right;
+     flex: 1;
+ }
+
+ .slip-footer {
+     text-align: center;
+     border-top: 2px solid var(--gray-400);
+     padding-top: 1rem;
+     margin-top: 1rem;
+ }
+
+ .slip-footer p {
+     font-size: 0.75rem;
+     color: var(--gray-600);
+     margin: 0;
+     font-style: italic;
+ }
+
+ /* コンビニ別の色分け */
+ .payment-slip-content.seven-eleven {
+     border-color: #e60012;
+ }
+
+ .payment-slip-content.seven-eleven .slip-header {
+     border-bottom-color: #e60012;
+ }
+
+ .payment-slip-content.seven-eleven .slip-footer {
+     border-top-color: #e60012;
+ }
+
+ .payment-slip-content.familymart {
+     border-color: #00a0e9;
+ }
+
+ .payment-slip-content.familymart .slip-header {
+     border-bottom-color: #00a0e9;
+ }
+
+ .payment-slip-content.familymart .slip-footer {
+     border-top-color: #00a0e9;
+ }
+
+ .payment-slip-content.lawson-ministop {
+     border-color: #ff6600;
+ }
+
+ .payment-slip-content.lawson-ministop .slip-header {
+     border-bottom-color: #ff6600;
+ }
+
+ .payment-slip-content.lawson-ministop .slip-footer {
+     border-top-color: #ff6600;
+ }
+
+ .payment-slip-content.seicomart {
+     border-color: #0066cc;
+ }
+
+ .payment-slip-content.seicomart .slip-header {
+     border-bottom-color: #0066cc;
+ }
+
+ .payment-slip-content.seicomart .slip-footer {
+     border-top-color: #0066cc;
+ }
+
+ .payment-slip-content.yamazaki {
+     border-color: #cc6600;
+ }
+
+ .payment-slip-content.yamazaki .slip-header {
+     border-bottom-color: #cc6600;
+ }
+
+ .payment-slip-content.yamazaki .slip-footer {
+     border-top-color: #cc6600;
+ }
