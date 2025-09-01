@@ -1304,6 +1304,12 @@ function closeConveniencePayment() {
         if (barcodeSection) {
             barcodeSection.style.display = 'none';
         }
+
+        // QRセクションを非表示
+        const qrSection = document.getElementById('qrSection');
+        if (qrSection) {
+            qrSection.style.display = 'none';
+        }
     }
 }
 
@@ -1323,22 +1329,38 @@ function selectConvenience(convenienceType) {
     
     conveniencePaymentState.selectedConvenience = convenienceType;
     
-    // バーコードセクションを表示
+    // バーコード/QRセクションの表示切替
     const barcodeSection = document.getElementById('barcodeSection');
+    const qrSection = document.getElementById('qrSection');
     if (barcodeSection) {
-        barcodeSection.style.display = 'block';
-        console.log('Barcode section displayed');
+        const showBarcode = (convenienceType === 'seven' || convenienceType === 'familymart');
+        const showQr = (convenienceType === 'lawson' || convenienceType === 'ministop');
+
+        // まず両方非表示
+        barcodeSection.style.display = 'none';
+        if (qrSection) qrSection.style.display = 'none';
+
+        if (showBarcode) {
+            barcodeSection.style.display = 'block';
+            console.log('Barcode section displayed');
+        } else if (showQr && qrSection) {
+            qrSection.style.display = 'block';
+            console.log('QR section displayed');
+        } else {
+            // その他は振込票（バーコード枠内の振込票）
+            barcodeSection.style.display = 'block';
+        }
         
         // セクションタイトルを更新
         const sectionTitle = barcodeSection.querySelector('h3');
         if (sectionTitle) {
-            const hasPaymentSlip = ['seven', 'familymart', 'lawson', 'ministop', 'yamazaki', 'seicomart'].includes(convenienceType);
-            sectionTitle.textContent = hasPaymentSlip ? '振込票' : 'バーコード';
+            const isSlip = ['yamazaki', 'seicomart'].includes(convenienceType) || (convenienceType === 'lawson' || convenienceType === 'ministop');
+            sectionTitle.textContent = isSlip ? '振込票' : 'バーコード';
         }
         
         // バーコードセクションまでスクロール
         setTimeout(() => {
-            barcodeSection.scrollIntoView({ 
+            (qrSection && qrSection.style.display === 'block' ? qrSection : barcodeSection).scrollIntoView({ 
                 behavior: 'smooth', 
                 block: 'start' 
             });
@@ -1356,10 +1378,12 @@ function simulateApiCall(convenienceType) {
     const barcodePlaceholder = document.getElementById('barcode-placeholder');
     const paymentSlip = document.getElementById('payment-slip');
     const paymentSlipImage = document.getElementById('payment-slip-image');
+    const qrPlaceholder = document.getElementById('qr-placeholder');
     
     // 初期状態で両方を非表示にする
     if (barcodePlaceholder) barcodePlaceholder.style.display = 'none';
     if (paymentSlip) paymentSlip.style.display = 'none';
+    if (qrPlaceholder) qrPlaceholder.style.display = 'none';
     
     // ローディング表示を開始
     if (barcodePlaceholder) {
@@ -1371,23 +1395,18 @@ function simulateApiCall(convenienceType) {
         `;
     }
     
-    // 振込票を表示するコンビニかチェック
-    const hasPaymentSlip = ['seven', 'familymart', 'lawson', 'ministop', 'yamazaki', 'seicomart'].includes(convenienceType);
+    // 表示種別を判定
+    const isBarcode = ['seven', 'familymart'].includes(convenienceType);
+    const isQr = ['lawson', 'ministop'].includes(convenienceType);
+    const isSlipOnly = ['yamazaki', 'seicomart'].includes(convenienceType);
     
     // 2秒後に振込票またはバーコードを表示（実際のAPI呼び出しをシミュレート）
     setTimeout(() => {
         // ローディング表示を停止
         if (barcodePlaceholder) barcodePlaceholder.style.display = 'none';
         
-        if (hasPaymentSlip) {
-            // 振込票を表示
-            if (paymentSlip) {
-                const slipContent = generatePaymentSlipContent(convenienceType);
-                paymentSlip.innerHTML = slipContent;
-                paymentSlip.style.display = 'flex';
-            }
-        } else {
-            // バーコードを表示
+        if (isBarcode) {
+            // バーコード表示
             if (barcodePlaceholder) {
                 barcodePlaceholder.style.display = 'flex';
                 barcodePlaceholder.innerHTML = `
@@ -1395,6 +1414,23 @@ function simulateApiCall(convenienceType) {
                     <p>バーコード生成完了</p>
                     <small>${getConvenienceName(convenienceType)}用のバーコードが生成されました</small>
                 `;
+            }
+        } else if (isQr) {
+            // QR表示
+            if (qrPlaceholder) {
+                qrPlaceholder.style.display = 'flex';
+                qrPlaceholder.innerHTML = `
+                    <i class="fas fa-qrcode"></i>
+                    <p>QRコード生成完了</p>
+                    <small>${getConvenienceName(convenienceType)}用のQRコードが生成されました</small>
+                `;
+            }
+        } else if (isSlipOnly) {
+            // 振込票のみ表示
+            if (paymentSlip) {
+                const slipContent = generatePaymentSlipContent(convenienceType);
+                paymentSlip.innerHTML = slipContent;
+                paymentSlip.style.display = 'flex';
             }
         }
         
