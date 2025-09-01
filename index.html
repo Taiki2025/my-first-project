@@ -90,6 +90,13 @@
                     <p>2025年7月分の電気料金が未払いとなっております。</p>
                     <p class="unpaid-amount">未払い金額: <strong>9,707円</strong></p>
                     <p class="payment-deadline">支払期限: 2025年8月26日(火)</p>
+                    <div class="suggestion-box">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <p>次回から払い忘れを防ぐため、<strong>クレジットカード払いや口座振替</strong>への変更がおすすめです。</p>
+                            <p>今すぐ支払い方法を変更して、スムーズにお支払いを管理しましょう。</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="notification-actions">
                     <button class="btn btn-primary" onclick="openConveniencePayment()">
@@ -100,6 +107,22 @@
                         <i class="fas fa-history"></i>
                         支払履歴を確認
                     </button>
+                    <div class="change-payment-actions">
+                        <button class="btn btn-outline" onclick="openChangePaymentOptions()">
+                            <i class="fas fa-exchange-alt"></i>
+                            次回以降の支払い方法を変更
+                        </button>
+                        <div class="quick-change-buttons">
+                            <button class="btn btn-secondary" onclick="startChangePaymentFlow('credit')">
+                                <i class="fas fa-credit-card"></i>
+                                クレジットカードに変更
+                            </button>
+                            <button class="btn btn-secondary" onclick="startChangePaymentFlow('bank')">
+                                <i class="fas fa-university"></i>
+                                口座振替に変更
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -1211,6 +1211,38 @@ function openNotificationDetail(notificationType) {
     }
 }
 
+// 未払い通知 → 支払い方法変更の導線
+function openChangePaymentOptions() {
+    // チャットを開いて「支払い方法の変更」トピックへ遷移
+    openChat();
+    setTimeout(() => {
+        addBotMessage("支払い方法の変更についてお答えいたします。<br><br>現在の支払い方法をお教えください。", [
+            {"text": "口座振替", "value": "payment_bank"},
+            {"text": "クレジットカード", "value": "payment_credit"},
+            {"text": "コンビニ払い", "value": "payment_convenience"},
+            {"text": "その他", "value": "payment_other"}
+        ]);
+    }, 300);
+}
+
+function startChangePaymentFlow(method) {
+    // 直接所望の支払い方法変更フローにジャンプ
+    openChat();
+    setTimeout(() => {
+        if (method === 'credit') {
+            addBotMessage("クレジットカード払いへの変更についてお答えいたします。<br><br>クレジットカード払いへの変更手続きを承っております。<br><br>お客様のお名前とご住所をお教えください。");
+            supportChatState.currentTopic = 'change_payment_credit';
+            supportChatState.step = 1;
+        } else if (method === 'bank') {
+            addBotMessage("口座振替への変更についてお答えいたします。<br><br>口座振替への変更手続きを承っております。<br><br>お客様のお名前とご住所をお教えください。");
+            supportChatState.currentTopic = 'change_payment_bank';
+            supportChatState.step = 1;
+        } else {
+            openChangePaymentOptions();
+        }
+    }, 300);
+}
+
 // DOMContentLoadedイベントリスナー
 document.addEventListener('DOMContentLoaded', function() {
     console.log('アプリケーションが初期化されました');
