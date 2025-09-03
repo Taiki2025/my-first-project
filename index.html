@@ -410,7 +410,7 @@
                                     <div class="chart-scroll-wrapper">
                                         <div class="chart-content-inner">
                                             <div class="chart-bars">
-                                                <div class="bar" style="height: 65%;" data-value="13.0"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 62.5%;" data-value="12.5"></div><div class="bar" style="height: 35%;" data-value="7.0"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 70%;" data-value="14.0"></div><div class="bar" style="height: 57.5%;" data-value="11.5"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 52.5%;" data-value="10.5"></div><div class="bar" style="height: 45%;" data-value="9.0"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div>
+                                                <div class="bar" style="height: 65%;" data-value="13.0"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 62.5%;" data-value="12.5"></div><div class="bar" style="height: 35%;" data-value="7.0"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 50%;" data-value="10.0"></div><div class="bar" style="height: 70%;" data-value="14.0"></div><div class="bar" style="height: 57.5%;" data-value="11.5"></div><div class="bar" style="height: 60%;" data-value="12.0"></div><div class="bar" style="height: 52.5%;" data-value="10.5"></div><div class="bar" style="height: 45%;" data-value="9.0"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div><div class="bar empty"></div>
                                             </div>
                                             <div class="chart-labels">
                                                 <span>7/25</span><span>7/26</span><span>7/27</span><span>7/28</span><span>7/29</span><span>7/30</span><span>7/31</span><span>8/1</span><span>8/2</span><span>8/3</span><span>8/4</span><span>8/5</span><span>8/6</span><span>8/7</span><span>8/8</span><span>8/9</span><span>8/10</span><span>8/11</span><span>8/12</span><span>8/13</span><span>8/14</span><span>8/15</span><span>8/16</span><span>8/17</span><span>8/18</span><span>8/19</span><span>8/20</span><span>8/21</span><span>8/22</span><span>8/23</span><span>8/24</span><span>8/25</span><span>8/26</span>
@@ -614,6 +614,141 @@
                     <button class="btn btn-outline qpico-history-btn" onclick="openQpicoHistory()">
                         Qピコ履歴を確認する >
                     </button>
+                </div>
+            </div>
+
+            <!-- よくある質問（FAQ）カード -->
+            <div class="card faq-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-question-circle"></i> よくある質問</h3>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-answer-1">
+                            <span>Qピコポイントはどのように獲得できますか？</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer" id="faq-answer-1" aria-hidden="true">
+                            <p>Qピコポイントは以下の方法で獲得できます：</p>
+                            <ul>
+                                <li>毎日のログイン（2ピコ）</li>
+                                <li>Web版検針票の確認（1ピコ）</li>
+                                <li>電気のご利用（4ピコ）</li>
+                                <li>契約情報の追加・更新（20ピコ）</li>
+                                <li>ecoアプリの使用（5ピコ）</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-answer-2">
+                            <span>Qピコポイントの有効期限はありますか？</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer" id="faq-answer-2" aria-hidden="true">
+                            <p>はい、Qピコポイントには有効期限があります。獲得したポイントは翌年の12月31日まで有効です。</p>
+                            <p>例：2025年8月に獲得したポイントは、2025年12月31日まで使用可能です。</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-answer-3">
+                            <span>Qピコポイントは何に交換できますか？</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer" id="faq-answer-3" aria-hidden="true">
+                            <p>Qピコポイントは以下の商品・サービスと交換できます：</p>
+                            <ul>
+                                <li>電気料金割引券</li>
+                                <li>商品券・ギフト券</li>
+                                <li>寄付（社会貢献活動）</li>
+                                <li>その他各種特典</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-answer-4">
+                            <span>電気料金の支払い方法を変更したい場合は？</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer" id="faq-answer-4" aria-hidden="true">
+                            <p>電気料金の支払い方法は以下の方法で変更できます：</p>
+                            <ul>
+                                <li>クレジットカード払い</li>
+                                <li>口座振替</li>
+                                <li>コンビニ支払い</li>
+                                <li>振込票での支払い</li>
+                            </ul>
+                            <p>変更手続きは、お客様サポートまでお問い合わせください。</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-answer-5">
+                            <span>停電が発生した場合の対処法は？</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer" id="faq-answer-5" aria-hidden="true">
+                            <p>停電が発生した場合は、以下の手順でご確認ください：</p>
+                            <ol>
+                                <li>ブレーカーが落ちていないか確認</li>
+                                <li>近隣の家も停電しているか確認</li>
+                                <li>九州電力の停電情報を確認</li>
+                                <li>緊急時はお客様サポートまでご連絡</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-answer-6">
+                            <span>料金プランの変更はいつでも可能ですか？</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer" id="faq-answer-6" aria-hidden="true">
+                            <p>料金プランの変更は基本的にいつでも可能です。ただし、以下の点にご注意ください：</p>
+                            <ul>
+                                <li>契約期間中のプラン変更は手数料が発生する場合があります</li>
+                                <li>新プランへの変更は翌月の検針日から適用されます</li>
+                                <li>一部のプランは条件により変更できない場合があります</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-answer-7">
+                            <span>電気使用量の確認方法は？</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer" id="faq-answer-7" aria-hidden="true">
+                            <p>電気使用量は以下の方法で確認できます：</p>
+                            <ul>
+                                <li>My九電アプリでのリアルタイム確認</li>
+                                <li>Webサイトでの月別・日別使用量確認</li>
+                                <li>検針票での確認</li>
+                                <li>スマートメーター搭載の場合は30分単位での確認も可能</li>
+                            </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-answer-8">
+                            <span>ecoアプリでポイントを獲得するには？</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer" id="faq-answer-8" aria-hidden="true">
+                            <p>ecoアプリでは以下の方法でポイントを獲得できます：</p>
+                            <ul>
+                                <li>毎日のログイン（5ポイント）</li>
+                                <li>使用量チェック（10ポイント）</li>
+                                <li>省エネチャレンジ参加（最大200ポイント）</li>
+                                <li>アンケート回答（15ポイント）</li>
+                                <li>省エネゲーム参加（ポイント変動）</li>
+                            </ul>
+                            <p>獲得したポイントは電気料金割引などに利用できます。</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

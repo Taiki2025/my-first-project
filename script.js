@@ -1674,4 +1674,78 @@ function showPaymentHistory() {
     alert('支払履歴ページに移動します。\n\n【最近の支払履歴】\n・2025年6月分: 8,441円 (支払済み)\n・2025年5月分: 7,892円 (支払済み)\n・2025年4月分: 9,123円 (支払済み)\n・2025年3月分: 8,567円 (支払済み)\n\n【支払方法】\n・口座振替: 6月、5月\n・コンビニ支払い: 4月、3月\n\n2025年7月分は未払いとなっております。\nコンビニ支払いでお支払いください。');
 }
 
+// FAQのアコーディオン機能
+function toggleFaq(questionElement) {
+    const faqItem = questionElement.parentElement;
+    const isActive = faqItem.classList.contains('active');
+    
+    // 他のFAQアイテムを閉じる
+    const allFaqItems = document.querySelectorAll('.faq-item');
+    allFaqItems.forEach(item => {
+        if (item !== faqItem) {
+            item.classList.remove('active');
+            updateFaqAccessibility(item, false);
+        }
+    });
+    
+    // クリックされたFAQアイテムの開閉を切り替え
+    if (isActive) {
+        faqItem.classList.remove('active');
+        updateFaqAccessibility(faqItem, false);
+    } else {
+        faqItem.classList.add('active');
+        updateFaqAccessibility(faqItem, true);
+    }
+}
+
+// ページ読み込み完了時の初期化
+document.addEventListener('DOMContentLoaded', function() {
+    // 既存の初期化処理
+    initializeChatData();
+    
+    // FAQの初期化
+    initializeFaq();
+});
+
+// FAQの初期化処理
+function initializeFaq() {
+    // FAQアイテムにクリックイベントを追加（既にHTMLにonclickがある場合は不要）
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(question => {
+        // onclickが既に設定されている場合は、イベントリスナーを追加しない
+        if (!question.hasAttribute('onclick')) {
+            question.addEventListener('click', function() {
+                toggleFaq(this);
+            });
+        }
+    });
+    
+    // キーボードアクセシビリティの追加
+    faqQuestions.forEach(question => {
+        question.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleFaq(this);
+            }
+        });
+        
+        // タブインデックスを設定
+        question.setAttribute('tabindex', '0');
+        question.setAttribute('role', 'button');
+        question.setAttribute('aria-expanded', 'false');
+        question.setAttribute('aria-controls', 'faq-answer');
+    });
+}
+
+// FAQのアクセシビリティを更新
+function updateFaqAccessibility(faqItem, isExpanded) {
+    const question = faqItem.querySelector('.faq-question');
+    const answer = faqItem.querySelector('.faq-answer');
+    
+    if (question && answer) {
+        question.setAttribute('aria-expanded', isExpanded.toString());
+        answer.setAttribute('aria-hidden', (!isExpanded).toString());
+    }
+}
+
 

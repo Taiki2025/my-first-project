@@ -3061,3 +3061,151 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
 }
+
+/* FAQカードのスタイル */
+.faq-card {
+    background: var(--white);
+    margin: 1.25rem;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    box-shadow: var(--shadow-md);
+}
+
+.faq-card .card-header h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.faq-card .card-header h3 i {
+    color: var(--primary-blue);
+}
+
+.faq-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.faq-item {
+    border: 1px solid var(--gray-200);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    border-color: var(--primary-blue);
+    box-shadow: var(--shadow-sm);
+}
+
+.faq-question {
+    background: var(--gray-50);
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    user-select: none;
+}
+
+.faq-question:hover {
+    background: var(--gray-100);
+}
+
+.faq-question span {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gray-700);
+    line-height: 1.4;
+    flex: 1;
+    margin-right: 0.75rem;
+}
+
+.faq-icon {
+    color: var(--primary-blue);
+    font-size: 0.875rem;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    background: var(--white);
+    padding: 0 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border-top: 0px solid var(--gray-200);
+}
+
+.faq-item.active .faq-answer {
+    padding: 1rem;
+    max-height: 500px;
+    border-top: 1px solid var(--gray-200);
+}
+
+.faq-answer p {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+}
+
+.faq-answer p:last-child {
+    margin-bottom: 0;
+}
+
+.faq-answer ul,
+.faq-answer ol {
+    margin: 0.5rem 0 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    line-height: 1.5;
+}
+
+.faq-answer li {
+    margin-bottom: 0.25rem;
+}
+
+.faq-answer li:last-child {
+    margin-bottom: 0;
+}
+
+/* モバイル対応の調整 */
+@media (max-width: 414px) {
+    .faq-card {
+        margin: 1rem;
+        padding: 1rem;
+    }
+    
+    .faq-question {
+        padding: 0.875rem;
+    }
+    
+    .faq-question span {
+        font-size: 0.8rem;
+    }
+    
+    .faq-answer {
+        padding: 0 0.875rem;
+    }
+    
+    .faq-item.active .faq-answer {
+        padding: 0.875rem;
+    }
+    
+    .faq-answer p,
+    .faq-answer ul,
+    .faq-answer ol {
+        font-size: 0.8rem;
+    }
+}
